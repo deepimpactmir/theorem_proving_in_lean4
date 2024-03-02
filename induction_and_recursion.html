@@ -1,40 +1,27 @@
 <!DOCTYPE HTML>
-<html lang="en" class="sidebar-visible no-js light">
+<html lang="en" class="light" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
         <title>Induction and Recursion - Theorem Proving in Lean 4</title>
-        
-        
 
 
         <!-- Custom HTML head -->
         
-
-
-        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="theme-color" content="#ffffff" />
+        <meta name="theme-color" content="#ffffff">
 
-        
         <link rel="icon" href="favicon.svg">
-        
-        
         <link rel="shortcut icon" href="favicon.png">
-        
         <link rel="stylesheet" href="css/variables.css">
         <link rel="stylesheet" href="css/general.css">
         <link rel="stylesheet" href="css/chrome.css">
-        
         <link rel="stylesheet" href="css/print.css" media="print">
-        
 
         <!-- Fonts -->
         <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
-        
         <link rel="stylesheet" href="fonts/fonts.css">
-        
 
         <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="highlight.css">
@@ -42,111 +29,134 @@
         <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
-        
 
-        
     </head>
-    <body>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
         <!-- Provide site root to javascript -->
-        <script type="text/javascript">
+        <script>
             var path_to_root = "";
             var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
-        <script type="text/javascript">
+        <script>
             try {
                 var theme = localStorage.getItem('mdbook-theme');
                 var sidebar = localStorage.getItem('mdbook-sidebar');
 
-                if (theme && theme.startsWith('"') && theme.endsWith('"')) {
+                if (theme.startsWith('"') && theme.endsWith('"')) {
                     localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
                 }
 
-                if (sidebar && sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
                     localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
                 }
             } catch (e) { }
         </script>
 
         <!-- Set the theme before any content is loaded, prevents flash -->
-        <script type="text/javascript">
+        <script>
             var theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
             var html = document.querySelector('html');
-            html.classList.remove('no-js')
             html.classList.remove('light')
             html.classList.add(theme);
-            html.classList.add('js');
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
         </script>
 
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
         <!-- Hide / unhide sidebar before it is displayed -->
-        <script type="text/javascript">
-            var html = document.querySelector('html');
-            var sidebar = 'hidden';
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
             }
-            html.classList.remove('sidebar-visible');
-            html.classList.add("sidebar-" + sidebar);
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
                 <ol class="chapter"><li class="chapter-item expanded affix "><a href="title_page.html">Theorem Proving in Lean 4</a></li><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="dependent_type_theory.html"><strong aria-hidden="true">2.</strong> Dependent Type Theory</a></li><li class="chapter-item expanded "><a href="propositions_and_proofs.html"><strong aria-hidden="true">3.</strong> Propositions and Proofs</a></li><li class="chapter-item expanded "><a href="quantifiers_and_equality.html"><strong aria-hidden="true">4.</strong> Quantifiers and Equality</a></li><li class="chapter-item expanded "><a href="tactics.html"><strong aria-hidden="true">5.</strong> Tactics</a></li><li class="chapter-item expanded "><a href="interacting_with_lean.html"><strong aria-hidden="true">6.</strong> Interacting with Lean</a></li><li class="chapter-item expanded "><a href="inductive_types.html"><strong aria-hidden="true">7.</strong> Inductive Types</a></li><li class="chapter-item expanded "><a href="induction_and_recursion.html" class="active"><strong aria-hidden="true">8.</strong> Induction and Recursion</a></li><li class="chapter-item expanded "><a href="structures_and_records.html"><strong aria-hidden="true">9.</strong> Structures and Records</a></li><li class="chapter-item expanded "><a href="type_classes.html"><strong aria-hidden="true">10.</strong> Type Classes</a></li><li class="chapter-item expanded "><a href="conv.html"><strong aria-hidden="true">11.</strong> The Conversion Tactic Mode</a></li><li class="chapter-item expanded "><a href="axioms_and_computation.html"><strong aria-hidden="true">12.</strong> Axioms and Computation</a></li></ol>
             </div>
-            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
         </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
 
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
-                
-                <div id="menu-bar-hover-placeholder"></div>
-                <div id="menu-bar" class="menu-bar sticky bordered">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
                     <div class="left-buttons">
-                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
                             <i class="fa fa-bars"></i>
-                        </button>
+                        </label>
                         <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
                             <i class="fa fa-paint-brush"></i>
                         </button>
                         <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        
                         <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
-                        
                     </div>
 
                     <h1 class="menu-title">Theorem Proving in Lean 4</h1>
 
                     <div class="right-buttons">
-                        
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
-                        
-                        
                         <a href="https://github.com/leanprover/theorem_proving_in_lean4" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        
+
                     </div>
                 </div>
 
-                
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -154,10 +164,9 @@
                         </ul>
                     </div>
                 </div>
-                
 
                 <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
-                <script type="text/javascript">
+                <script>
                     document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
                     document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
                     Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
@@ -167,7 +176,7 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1><a class="header" href="#induction-and-recursion" id="induction-and-recursion">Induction and Recursion</a></h1>
+                        <h1 id="induction-and-recursion"><a class="header" href="#induction-and-recursion">Induction and Recursion</a></h1>
 <p>In the previous chapter, we saw that inductive definitions provide a
 powerful means of introducing new types in Lean. Moreover, the
 constructors and the recursors provide the only means of defining
@@ -178,11 +187,11 @@ pattern matching, and writing inductive proofs. It allows you to
 define a function by specifying equations that it should satisfy, and
 it allows you to prove a theorem by specifying how to handle various
 cases that can arise. Behind the scenes, these descriptions are
-&quot;compiled&quot; down to primitive recursors, using a procedure that we
-refer to as the &quot;equation compiler.&quot; The equation compiler is not part
+"compiled" down to primitive recursors, using a procedure that we
+refer to as the "equation compiler." The equation compiler is not part
 of the trusted code base; its output consists of terms that are
 checked independently by the kernel.</p>
-<h2><a class="header" href="#pattern-matching" id="pattern-matching">Pattern Matching</a></h2>
+<h2 id="pattern-matching"><a class="header" href="#pattern-matching">Pattern Matching</a></h2>
 <p>The interpretation of schematic patterns is the first step of the
 compilation process. We have seen that the <code>casesOn</code> recursor can
 be used to define functions and prove theorems by cases, according to
@@ -206,14 +215,14 @@ def isZero : Nat → Bool
   | succ x =&gt; false
 </code></pre>
 <p>The equations used to define these functions hold definitionally:</p>
-<pre><code class="language-lean"><span class="boring">open Nat
-</span><span class="boring">def sub1 : Nat → Nat
-</span><span class="boring">  | zero   =&gt; zero
-</span><span class="boring">  | succ x =&gt; x
-</span><span class="boring">def isZero : Nat → Bool
-</span><span class="boring">  | zero   =&gt; true
-</span><span class="boring">  | succ x =&gt; false
-</span>example : sub1 0 = 0 := rfl
+<pre><code class="language-lean"># open Nat
+# def sub1 : Nat → Nat
+#   | zero   =&gt; zero
+#   | succ x =&gt; x
+# def isZero : Nat → Bool
+#   | zero   =&gt; true
+#   | succ x =&gt; false
+example : sub1 0 = 0 := rfl
 example (x : Nat) : sub1 (succ x) = x := rfl
 
 example : isZero 0 = true := rfl
@@ -248,16 +257,16 @@ def bar : Option Nat → Nat
 </code></pre>
 <p>Here we use it not only to define a function, but also to carry out a
 proof by cases:</p>
-<pre><code class="language-lean"><span class="boring">namespace Hidden
-</span>def not : Bool → Bool
+<pre><code class="language-lean"># namespace Hidden
+def not : Bool → Bool
   | true  =&gt; false
   | false =&gt; true
 
 theorem not_not : ∀ (b : Bool), not (not b) = b
   | true  =&gt; rfl  -- proof that not (not true) = true
   | false =&gt; rfl  -- proof that not (not false) = false
-<span class="boring">end Hidden
-</span></code></pre>
+# end Hidden
+</code></pre>
 <p>Pattern matching can also be used to destruct inductively defined propositions:</p>
 <pre><code class="language-lean">example (p q : Prop) : p ∧ q → q ∧ p
   | And.intro h₁ h₂ =&gt; And.intro h₂ h₁
@@ -282,11 +291,11 @@ the necessary case splits from the patterns that are presented to it,
 and raises an error if the patterns fail to exhaust the cases. Once
 again, we can use arithmetic notation, as in the version below. In
 either case, the defining equations hold definitionally.</p>
-<pre><code class="language-lean"><span class="boring">def sub2 : Nat → Nat
-</span><span class="boring">  | 0   =&gt; 0
-</span><span class="boring">  | 1   =&gt; 0
-</span><span class="boring">  | x+2 =&gt; x
-</span>example : sub2 0 = 0 := rfl
+<pre><code class="language-lean"># def sub2 : Nat → Nat
+#   | 0   =&gt; 0
+#   | 1   =&gt; 0
+#   | x+2 =&gt; x
+example : sub2 0 = 0 := rfl
 example : sub2 1 = 0 := rfl
 example : sub2 (x+2) = x := rfl
 
@@ -334,8 +343,8 @@ function of two arguments:</p>
 <p>In each of the following examples, splitting occurs on only the first
 argument, even though the others are included among the list of
 patterns.</p>
-<pre><code class="language-lean"><span class="boring">namespace Hidden
-</span>def and : Bool → Bool → Bool
+<pre><code class="language-lean"># namespace Hidden
+def and : Bool → Bool → Bool
   | true,  a =&gt; a
   | false, _ =&gt; false
 
@@ -346,8 +355,8 @@ def or : Bool → Bool → Bool
 def cond : Bool → α → α → α
   | true,  x, y =&gt; x
   | false, x, y =&gt; y
-<span class="boring">end Hidden
-</span></code></pre>
+# end Hidden
+</code></pre>
 <p>Notice also that, when the value of an argument is not needed in the
 definition, you can use an underscore instead. This underscore is
 known as a <em>wildcard pattern</em>, or an <em>anonymous variable</em>. In contrast
@@ -377,7 +386,7 @@ not participate in a case split.</p>
 arguments to dependent types pose additional constraints on the
 various cases. Such examples of <em>dependent pattern matching</em> are
 considered in the <a href="#dependent-pattern-matching">Section Dependent Pattern Matching</a>.</p>
-<h2><a class="header" href="#wildcards-and-overlapping-patterns" id="wildcards-and-overlapping-patterns">Wildcards and Overlapping Patterns</a></h2>
+<h2 id="wildcards-and-overlapping-patterns"><a class="header" href="#wildcards-and-overlapping-patterns">Wildcards and Overlapping Patterns</a></h2>
 <p>Consider one of the examples from the last section:</p>
 <pre><code class="language-lean">def foo : Nat → Nat → Nat
   | 0,   n   =&gt; 0
@@ -395,11 +404,11 @@ pair of arguments <code>0 0</code> matches all three cases. But Lean handles
 the ambiguity by using the first applicable equation, so in this example
 the net result is the same. In particular, the following equations hold
 definitionally:</p>
-<pre><code class="language-lean"><span class="boring">def foo : Nat → Nat → Nat
-</span><span class="boring">  | 0, n =&gt; 0
-</span><span class="boring">  | m, 0 =&gt; 1
-</span><span class="boring">  | m, n =&gt; 2
-</span>example : foo 0     0     = 0 := rfl
+<pre><code class="language-lean"># def foo : Nat → Nat → Nat
+#   | 0, n =&gt; 0
+#   | m, 0 =&gt; 1
+#   | m, n =&gt; 2
+example : foo 0     0     = 0 := rfl
 example : foo 0     (n+1) = 0 := rfl
 example : foo (m+1) 0     = 1 := rfl
 example : foo (m+1) (n+1) = 2 := rfl
@@ -430,7 +439,7 @@ both approaches.</p>
 <pre><code class="language-lean">def f1 : Nat → Nat → Nat
   | 0, _  =&gt; 1
   | _, 0  =&gt; 2
-  | _, _  =&gt; default  -- the &quot;incomplete&quot; case
+  | _, _  =&gt; default  -- the "incomplete" case
 
 example : f1 0     0     = 1       := rfl
 example : f1 0     (a+1) = 1       := rfl
@@ -440,7 +449,7 @@ example : f1 (a+1) (b+1) = default := rfl
 def f2 : Nat → Nat → Option Nat
   | 0, _  =&gt; some 1
   | _, 0  =&gt; some 2
-  | _, _  =&gt; none     -- the &quot;incomplete&quot; case
+  | _, _  =&gt; none     -- the "incomplete" case
 
 example : f2 0     0     = some 1 := rfl
 example : f2 0     (a+1) = some 1 := rfl
@@ -458,7 +467,7 @@ not been covered.</p>
   | a+1, [],     true  =&gt; a + 1
   | a+1, b :: _, _     =&gt; a + b
 </code></pre>
-<p>It will also use an &quot;if ... then ... else&quot; instead of a <code>casesOn</code> in appropriate situations.</p>
+<p>It will also use an "if ... then ... else" instead of a <code>casesOn</code> in appropriate situations.</p>
 <pre><code class="language-lean">def foo : Char → Nat
   | 'A' =&gt; 1
   | 'B' =&gt; 2
@@ -466,7 +475,7 @@ not been covered.</p>
 
 #print foo.match_1
 </code></pre>
-<h2><a class="header" href="#structural-recursion-and-induction" id="structural-recursion-and-induction">Structural Recursion and Induction</a></h2>
+<h2 id="structural-recursion-and-induction"><a class="header" href="#structural-recursion-and-induction">Structural Recursion and Induction</a></h2>
 <p>What makes the equation compiler powerful is that it also supports
 recursive definitions. In the next three sections, we will describe,
 respectively:</p>
@@ -493,7 +502,7 @@ the arguments to the constructors represented by the given
 variables. In <a href="#dependent-pattern-matching">Section Dependent Pattern Matching</a>,
 we will see that it is sometimes necessary to include explicit terms in patterns that
 are needed to make an expression type check, though they do not play a
-role in pattern matching. These are called &quot;inaccessible patterns&quot; for
+role in pattern matching. These are called "inaccessible patterns" for
 that reason. But we will not need to use such inaccessible patterns
 before <a href="#dependent-pattern-matching">Section Dependent Pattern Matching</a>.</p>
 <p>As we saw in the last section, the terms <code>t₁, ..., tₙ</code> can make use
@@ -536,10 +545,10 @@ used directly by the user; rather, the <code>simp</code> tactic
 is configured to use them when necessary. Thus both of the following
 proofs of <code>zero_add</code> work:</p>
 <pre><code class="language-lean">open Nat
-<span class="boring">def add : Nat → Nat → Nat
-</span><span class="boring">  | m, zero   =&gt; m
-</span><span class="boring">  | m, succ n =&gt; succ (add m n)
-</span>theorem zero_add : ∀ n, add zero n = n
+# def add : Nat → Nat → Nat
+#   | m, zero   =&gt; m
+#   | m, succ n =&gt; succ (add m n)
+theorem zero_add : ∀ n, add zero n = n
   | zero   =&gt; by simp [add]
   | succ n =&gt; by simp [add, zero_add]
 </code></pre>
@@ -644,7 +653,7 @@ example : append [1, 2, 3] [4, 5] = [1, 2, 3, 4, 5] := rfl
 -- [5, 7, 9]
 </code></pre>
 <p>You are encouraged to experiment with similar examples in the exercises below.</p>
-<h2><a class="header" href="#local-recursive-declarations" id="local-recursive-declarations">Local recursive declarations</a></h2>
+<h2 id="local-recursive-declarations"><a class="header" href="#local-recursive-declarations">Local recursive declarations</a></h2>
 <p>You can define local recursive declarations using the <code>let rec</code> keyword.</p>
 <pre><code class="language-lean">def replicate (n : Nat) (a : α) : List α :=
   let rec loop : Nat → List α → List α
@@ -657,16 +666,16 @@ example : append [1, 2, 3] [4, 5] = [1, 2, 3, 4, 5] := rfl
 </code></pre>
 <p>Lean creates an auxiliary declaration for each <code>let rec</code>. In the example above,
 it created the declaration <code>replicate.loop</code> for the <code>let rec loop</code> occurring at <code>replicate</code>.
-Note that, Lean &quot;closes&quot; the declaration by adding any local variable occurring in the
+Note that, Lean "closes" the declaration by adding any local variable occurring in the
 <code>let rec</code> declaration as additional parameters. For example, the local variable <code>a</code> occurs
 at <code>let rec loop</code>.</p>
 <p>You can also use <code>let rec</code> in tactic mode and for creating proofs by induction.</p>
-<pre><code class="language-lean"><span class="boring">def replicate (n : Nat) (a : α) : List α :=
-</span><span class="boring"> let rec loop : Nat → List α → List α
-</span><span class="boring">   | 0,   as =&gt; as
-</span><span class="boring">   | n+1, as =&gt; loop n (a::as)
-</span><span class="boring"> loop n []
-</span>theorem length_replicate (n : Nat) (a : α) : (replicate n a).length = n := by
+<pre><code class="language-lean"># def replicate (n : Nat) (a : α) : List α :=
+#  let rec loop : Nat → List α → List α
+#    | 0,   as =&gt; as
+#    | n+1, as =&gt; loop n (a::as)
+#  loop n []
+theorem length_replicate (n : Nat) (a : α) : (replicate n a).length = n := by
   let rec aux (n : Nat) (as : List α)
               : (replicate.loop a n as).length = n + as.length := by
     match n with
@@ -692,7 +701,7 @@ where
     | 0   =&gt; simp [replicate.loop]
     | n+1 =&gt; simp [replicate.loop, aux n, Nat.add_succ, Nat.succ_add]
 </code></pre>
-<h2><a class="header" href="#well-founded-recursion-and-induction" id="well-founded-recursion-and-induction">Well-Founded Recursion and Induction</a></h2>
+<h2 id="well-founded-recursion-and-induction"><a class="header" href="#well-founded-recursion-and-induction">Well-Founded Recursion and Induction</a></h2>
 <p>When structural recursion cannot be used, we can prove termination using well-founded recursion.
 We need a well-founded relation and a proof that each recursive application is decreasing with respect to
 this relation. Dependent type theory is powerful enough to encode and justify
@@ -765,7 +774,7 @@ noncomputable def div := WellFounded.fix (measure id).wf div.F
 #reduce div 8 2 -- 4
 </code></pre>
 <p>The definition is somewhat inscrutable. Here the recursion is on
-<code>x</code>, and <code>div.F x f : Nat → Nat</code> returns the &quot;divide by <code>y</code>&quot;
+<code>x</code>, and <code>div.F x f : Nat → Nat</code> returns the "divide by <code>y</code>"
 function for that fixed <code>x</code>. You have to remember that the second
 argument to <code>div.F</code>, the recipe for the recursion, is a function
 that is supposed to return the divide by <code>y</code> function for all values
@@ -788,13 +797,13 @@ for this tactic.</p>
 <p>The defining equation for <code>div</code> does <em>not</em> hold definitionally, but
 we can unfold <code>div</code> using the <code>unfold</code> tactic. We use <a href="./conv.html"><code>conv</code></a> to select which
 <code>div</code> application we want to unfold.</p>
-<pre><code class="language-lean"><span class="boring">def div (x y : Nat) : Nat :=
-</span><span class="boring"> if h : 0 &lt; y ∧ y ≤ x then
-</span><span class="boring">   have : x - y &lt; x := Nat.sub_lt (Nat.lt_of_lt_of_le h.1 h.2) h.1
-</span><span class="boring">   div (x - y) y + 1
-</span><span class="boring"> else
-</span><span class="boring">   0
-</span>example (x y : Nat) : div x y = if 0 &lt; y ∧ y ≤ x then div (x - y) y + 1 else 0 := by
+<pre><code class="language-lean"># def div (x y : Nat) : Nat :=
+#  if h : 0 &lt; y ∧ y ≤ x then
+#    have : x - y &lt; x := Nat.sub_lt (Nat.lt_of_lt_of_le h.1 h.2) h.1
+#    div (x - y) y + 1
+#  else
+#    0
+example (x y : Nat) : div x y = if 0 &lt; y ∧ y ≤ x then div (x - y) y + 1 else 0 := by
   conv =&gt; lhs; unfold div -- unfold occurrence in the left-hand-side of the equation
 
 example (x y : Nat) (h : 0 &lt; y ∧ y ≤ x) : div x y = div (x - y) y + 1 := by
@@ -872,7 +881,7 @@ decreasing_by
   · apply Prod.Lex.right; simp_arith
   · apply Prod.Lex.left; simp_arith
 </code></pre>
-<p>We can use <code>decreasing_by sorry</code> to instruct Lean to &quot;trust&quot; us that the function terminates.</p>
+<p>We can use <code>decreasing_by sorry</code> to instruct Lean to "trust" us that the function terminates.</p>
 <pre><code class="language-lean">def natToBin : Nat → List Nat
   | 0     =&gt; [0]
   | 1     =&gt; [1]
@@ -907,7 +916,7 @@ decreasing_by sorry
 <p>By default, the tactic <code>decreasing_tactic</code> is used to show that recursive applications are smaller with respect to the selected well-founded relation. If <code>decreasing_tactic</code> fails, the error message includes the remaining goal <code>... |- G</code>. Note that, the <code>decreasing_tactic</code> uses <code>assumption</code>. So, you can include a <code>have</code>-expression to prove goal <code>G</code>. You can also provide your own tactic using <code>decreasing_by</code>.</p>
 </li>
 </ul>
-<h2><a class="header" href="#mutual-recursion" id="mutual-recursion">Mutual Recursion</a></h2>
+<h2 id="mutual-recursion"><a class="header" href="#mutual-recursion">Mutual Recursion</a></h2>
 <p>Lean also supports mutual recursive definitions. The syntax is similar to that for mutual inductive types. Here is an example:</p>
 <pre><code class="language-lean">mutual
   def even : Nat → Bool
@@ -942,14 +951,14 @@ theorem even_eq_not_odd : ∀ a, even a = not (odd a) := by
 end
 </code></pre>
 <p>The constructors, <code>even_zero</code>, <code>even_succ</code>, and <code>odd_succ</code> provide positive means for showing that a number is even or odd. We need to use the fact that the inductive type is generated by these constructors to know that zero is not odd, and that the latter two implications reverse. As usual, the constructors are kept in a namespace that is named after the type being defined, and the command <code>open Even Odd</code> allows us to access them more conveniently.</p>
-<pre><code class="language-lean"><span class="boring">mutual
-</span><span class="boring"> inductive Even : Nat → Prop where
-</span><span class="boring">   | even_zero : Even 0
-</span><span class="boring">   | even_succ : ∀ n, Odd n → Even (n + 1)
-</span><span class="boring"> inductive Odd : Nat → Prop where
-</span><span class="boring">   | odd_succ : ∀ n, Even n → Odd (n + 1)
-</span><span class="boring">end
-</span>open Even Odd
+<pre><code class="language-lean"># mutual
+#  inductive Even : Nat → Prop where
+#    | even_zero : Even 0
+#    | even_succ : ∀ n, Odd n → Even (n + 1)
+#  inductive Odd : Nat → Prop where
+#    | odd_succ : ∀ n, Even n → Odd (n + 1)
+# end
+open Even Odd
 
 theorem not_odd_zero : ¬ Odd 0 :=
   fun h =&gt; nomatch h
@@ -966,10 +975,10 @@ theorem odd_of_even_succ : ∀ n, Even (n + 1) → Odd n
   | app   : String → List Term → Term
 </code></pre>
 <p>We can then use a mutual recursive definition to count the number of constants occurring in a term, as well as the number occurring in a list of terms.</p>
-<pre><code class="language-lean"><span class="boring">inductive Term where
-</span><span class="boring"> | const : String → Term
-</span><span class="boring"> | app   : String → List Term → Term
-</span>namespace Term
+<pre><code class="language-lean"># inductive Term where
+#  | const : String → Term
+#  | app   : String → List Term → Term
+namespace Term
 
 mutual
   def numConsts : Term → Nat
@@ -981,26 +990,26 @@ mutual
     | c :: cs =&gt; numConsts c + numConstsLst cs
 end
 
-def sample := app &quot;f&quot; [app &quot;g&quot; [const &quot;x&quot;], const &quot;y&quot;]
+def sample := app "f" [app "g" [const "x"], const "y"]
 
 #eval numConsts sample
 
 end Term
 </code></pre>
 <p>As a final example, we define a function <code>replaceConst a b e</code> that replaces a constant <code>a</code> with <code>b</code> in a term <code>e</code>, and then prove the number of constants is the same. Note that, our proof uses mutual recursion (aka induction).</p>
-<pre><code class="language-lean"><span class="boring">inductive Term where
-</span><span class="boring"> | const : String → Term
-</span><span class="boring"> | app   : String → List Term → Term
-</span><span class="boring">namespace Term
-</span><span class="boring">mutual
-</span><span class="boring"> def numConsts : Term → Nat
-</span><span class="boring">   | const _ =&gt; 1
-</span><span class="boring">   | app _ cs =&gt; numConstsLst cs
-</span><span class="boring">  def numConstsLst : List Term → Nat
-</span><span class="boring">   | [] =&gt; 0
-</span><span class="boring">   | c :: cs =&gt; numConsts c + numConstsLst cs
-</span><span class="boring">end
-</span>mutual
+<pre><code class="language-lean"># inductive Term where
+#  | const : String → Term
+#  | app   : String → List Term → Term
+# namespace Term
+# mutual
+#  def numConsts : Term → Nat
+#    | const _ =&gt; 1
+#    | app _ cs =&gt; numConstsLst cs
+#   def numConstsLst : List Term → Nat
+#    | [] =&gt; 0
+#    | c :: cs =&gt; numConsts c + numConstsLst cs
+# end
+mutual
   def replaceConst (a b : String) : Term → Term
     | const c =&gt; if a == c then const b else const c
     | app f cs =&gt; app f (replaceConstLst a b cs)
@@ -1026,7 +1035,7 @@ mutual
             numConsts_replaceConstLst a b cs]
 end
 </code></pre>
-<h2><a class="header" href="#dependent-pattern-matching" id="dependent-pattern-matching">Dependent Pattern Matching</a></h2>
+<h2 id="dependent-pattern-matching"><a class="header" href="#dependent-pattern-matching">Dependent Pattern Matching</a></h2>
 <p>All the examples of pattern matching we considered in
 <a href="#pattern-matching">Section Pattern Matching</a> can easily be written using <code>casesOn</code>
 and <code>recOn</code>. However, this is often not the case with indexed
@@ -1060,11 +1069,11 @@ end Vector
 is going on: if <code>v</code> has type <code>Vector α (succ n)</code>, it <em>can't</em> be
 nil, but it is not clear how to tell that to <code>casesOn</code>.</p>
 <p>One solution is to define an auxiliary function:</p>
-<pre><code class="language-lean"><span class="boring">inductive Vector (α : Type u) : Nat → Type u
-</span><span class="boring">  | nil  : Vector α 0
-</span><span class="boring">  | cons : α → {n : Nat} → Vector α n → Vector α (n+1)
-</span><span class="boring">namespace Vector
-</span>def tailAux (v : Vector α m) : m = n + 1 → Vector α n :=
+<pre><code class="language-lean"># inductive Vector (α : Type u) : Nat → Type u
+#   | nil  : Vector α 0
+#   | cons : α → {n : Nat} → Vector α n → Vector α (n+1)
+# namespace Vector
+def tailAux (v : Vector α m) : m = n + 1 → Vector α n :=
   Vector.casesOn (motive := fun x _ =&gt; x = n + 1 → Vector α n) v
     (fun h : 0 = n + 1 =&gt; Nat.noConfusion h)
     (fun (a : α) (m : Nat) (as : Vector α m) =&gt;
@@ -1073,8 +1082,8 @@ nil, but it is not clear how to tell that to <code>casesOn</code>.</p>
 
 def tail (v : Vector α (n+1)) : Vector α n :=
   tailAux v rfl
-<span class="boring">end Vector
-</span></code></pre>
+# end Vector
+</code></pre>
 <p>In the <code>nil</code> case, <code>m</code> is instantiated to <code>0</code>, and
 <code>noConfusion</code> makes use of the fact that <code>0 = succ n</code> cannot
 occur.  Otherwise, <code>v</code> is of the form <code>a :: w</code>, and we can simply
@@ -1088,11 +1097,11 @@ a case is to use <code>noConfusion</code>.</p>
 <p>The <code>tail</code> function is, however, easy to define using recursive
 equations, and the equation compiler generates all the boilerplate
 code automatically for us. Here are a number of similar examples:</p>
-<pre><code class="language-lean"><span class="boring">inductive Vector (α : Type u) : Nat → Type u
-</span><span class="boring">  | nil  : Vector α 0
-</span><span class="boring">  | cons : α → {n : Nat} → Vector α n → Vector α (n+1)
-</span><span class="boring">namespace Vector
-</span>def head : {n : Nat} → Vector α (n+1) → α
+<pre><code class="language-lean"># inductive Vector (α : Type u) : Nat → Type u
+#   | nil  : Vector α 0
+#   | cons : α → {n : Nat} → Vector α n → Vector α (n+1)
+# namespace Vector
+def head : {n : Nat} → Vector α (n+1) → α
   | n, cons a as =&gt; a
 
 def tail : {n : Nat} → Vector α (n+1) → Vector α n
@@ -1108,27 +1117,27 @@ def map (f : α → β → γ) : {n : Nat} → Vector α n → Vector β n → V
 def zip : {n : Nat} → Vector α n → Vector β n → Vector (α × β) n
   | 0,   nil,       nil       =&gt; nil
   | n+1, cons a as, cons b bs =&gt; cons (a, b) (zip as bs)
-<span class="boring">end Vector
-</span></code></pre>
-<p>Note that we can omit recursive equations for &quot;unreachable&quot; cases such
+# end Vector
+</code></pre>
+<p>Note that we can omit recursive equations for "unreachable" cases such
 as <code>head nil</code>. The automatically generated definitions for indexed
 families are far from straightforward. For example:</p>
-<pre><code class="language-lean"><span class="boring">inductive Vector (α : Type u) : Nat → Type u
-</span><span class="boring">  | nil  : Vector α 0
-</span><span class="boring">  | cons : α → {n : Nat} → Vector α n → Vector α (n+1)
-</span><span class="boring">namespace Vector
-</span>def map (f : α → β → γ) : {n : Nat} → Vector α n → Vector β n → Vector γ n
+<pre><code class="language-lean"># inductive Vector (α : Type u) : Nat → Type u
+#   | nil  : Vector α 0
+#   | cons : α → {n : Nat} → Vector α n → Vector α (n+1)
+# namespace Vector
+def map (f : α → β → γ) : {n : Nat} → Vector α n → Vector β n → Vector γ n
   | 0,   nil,       nil       =&gt; nil
   | n+1, cons a as, cons b bs =&gt; cons (f a b) (map f as bs)
 
 #print map
 #print map.match_1
-<span class="boring">end Vector
-</span></code></pre>
+# end Vector
+</code></pre>
 <p>The <code>map</code> function is even more tedious to define by hand than the
 <code>tail</code> function. We encourage you to try it, using <code>recOn</code>,
 <code>casesOn</code> and <code>noConfusion</code>.</p>
-<h2><a class="header" href="#inaccessible-patterns" id="inaccessible-patterns">Inaccessible Patterns</a></h2>
+<h2 id="inaccessible-patterns"><a class="header" href="#inaccessible-patterns">Inaccessible Patterns</a></h2>
 <p>Sometimes an argument in a dependent matching pattern is not essential
 to the definition, but nonetheless has to be included to specialize
 the type of the expression appropriately. Lean allows users to mark
@@ -1136,15 +1145,15 @@ such subterms as <em>inaccessible</em> for pattern matching. These
 annotations are essential, for example, when a term occurring in the
 left-hand side is neither a variable nor a constructor application,
 because these are not suitable targets for pattern matching. We can
-view such inaccessible patterns as &quot;don't care&quot; components of the
+view such inaccessible patterns as "don't care" components of the
 patterns. You can declare a subterm inaccessible by writing
 <code>.(t)</code>. If the inaccessible pattern can be inferred, you can also write
 <code>_</code>.</p>
 <p>The following example, we declare an inductive type that defines the
-property of &quot;being in the image of <code>f</code>&quot;. You can view an element of
+property of "being in the image of <code>f</code>". You can view an element of
 the type <code>ImageOf f b</code> as evidence that <code>b</code> is in the image of
 <code>f</code>, whereby the constructor <code>imf</code> is used to build such
-evidence. We can then define any function <code>f</code> with an &quot;inverse&quot;
+evidence. We can then define any function <code>f</code> with an "inverse"
 which takes anything in the image of <code>f</code> to an element that is
 mapped to it. The typing rules forces us to write <code>f a</code> for the
 first argument, but this term is neither a variable nor a constructor
@@ -1193,63 +1202,63 @@ the first pattern.</p>
 argument and replaces it by <code>0</code> and <code>n + 1</code> when we do a case
 split on the second argument. Using inaccessible patterns, we can prompt
 the equation compiler to avoid the case split on <code>n</code></p>
-<pre><code class="language-lean"><span class="boring">inductive Vector (α : Type u) : Nat → Type u
-</span><span class="boring">  | nil  : Vector α 0
-</span><span class="boring">  | cons : α → {n : Nat} → Vector α n → Vector α (n+1)
-</span><span class="boring">namespace Vector
-</span>def add [Add α] : {n : Nat} → Vector α n → Vector α n → Vector α n
+<pre><code class="language-lean"># inductive Vector (α : Type u) : Nat → Type u
+#   | nil  : Vector α 0
+#   | cons : α → {n : Nat} → Vector α n → Vector α (n+1)
+# namespace Vector
+def add [Add α] : {n : Nat} → Vector α n → Vector α n → Vector α n
   | .(_), nil,       nil       =&gt; nil
   | .(_), cons a as, cons b bs =&gt; cons (a + b) (add as bs)
-<span class="boring">end Vector
-</span></code></pre>
+# end Vector
+</code></pre>
 <p>Marking the position as an inaccessible pattern tells the
 equation compiler first, that the form of the argument should be
 inferred from the constraints posed by the other arguments, and,
 second, that the first argument should <em>not</em> participate in pattern
 matching.</p>
 <p>The inaccessible pattern <code>.(_)</code> can be written as <code>_</code> for convenience.</p>
-<pre><code class="language-lean"><span class="boring">inductive Vector (α : Type u) : Nat → Type u
-</span><span class="boring">  | nil  : Vector α 0
-</span><span class="boring">  | cons : α → {n : Nat} → Vector α n → Vector α (n+1)
-</span><span class="boring">namespace Vector
-</span>def add [Add α] : {n : Nat} → Vector α n → Vector α n → Vector α n
+<pre><code class="language-lean"># inductive Vector (α : Type u) : Nat → Type u
+#   | nil  : Vector α 0
+#   | cons : α → {n : Nat} → Vector α n → Vector α (n+1)
+# namespace Vector
+def add [Add α] : {n : Nat} → Vector α n → Vector α n → Vector α n
   | _, nil,       nil       =&gt; nil
   | _, cons a as, cons b bs =&gt; cons (a + b) (add as bs)
-<span class="boring">end Vector
-</span></code></pre>
+# end Vector
+</code></pre>
 <p>As we mentioned above, the argument <code>{n : Nat}</code> is part of the
 pattern matching, because it cannot be held fixed throughout the
 definition. In previous Lean versions, users often found it cumbersome
 to have to include these extra discriminants. Thus, Lean 4
 implements a new feature, <em>discriminant refinement</em>, which includes
 these extra discriminants automatically for us.</p>
-<pre><code class="language-lean"><span class="boring">inductive Vector (α : Type u) : Nat → Type u
-</span><span class="boring">  | nil  : Vector α 0
-</span><span class="boring">  | cons : α → {n : Nat} → Vector α n → Vector α (n+1)
-</span><span class="boring">namespace Vector
-</span>def add [Add α] {n : Nat} : Vector α n → Vector α n → Vector α n
+<pre><code class="language-lean"># inductive Vector (α : Type u) : Nat → Type u
+#   | nil  : Vector α 0
+#   | cons : α → {n : Nat} → Vector α n → Vector α (n+1)
+# namespace Vector
+def add [Add α] {n : Nat} : Vector α n → Vector α n → Vector α n
   | nil,       nil       =&gt; nil
   | cons a as, cons b bs =&gt; cons (a + b) (add as bs)
-<span class="boring">end Vector
-</span></code></pre>
+# end Vector
+</code></pre>
 <p>When combined with the <em>auto bound implicits</em> feature, you can simplify
 the declare further and write:</p>
-<pre><code class="language-lean"><span class="boring">inductive Vector (α : Type u) : Nat → Type u
-</span><span class="boring">  | nil  : Vector α 0
-</span><span class="boring">  | cons : α → {n : Nat} → Vector α n → Vector α (n+1)
-</span><span class="boring">namespace Vector
-</span>def add [Add α] : Vector α n → Vector α n → Vector α n
+<pre><code class="language-lean"># inductive Vector (α : Type u) : Nat → Type u
+#   | nil  : Vector α 0
+#   | cons : α → {n : Nat} → Vector α n → Vector α (n+1)
+# namespace Vector
+def add [Add α] : Vector α n → Vector α n → Vector α n
   | nil,       nil       =&gt; nil
   | cons a as, cons b bs =&gt; cons (a + b) (add as bs)
-<span class="boring">end Vector
-</span></code></pre>
+# end Vector
+</code></pre>
 <p>Using these new features, you can write the other vector functions defined
 in the previous sections more compactly as follows:</p>
-<pre><code class="language-lean"><span class="boring">inductive Vector (α : Type u) : Nat → Type u
-</span><span class="boring">  | nil  : Vector α 0
-</span><span class="boring">  | cons : α → {n : Nat} → Vector α n → Vector α (n+1)
-</span><span class="boring">namespace Vector
-</span>def head : Vector α (n+1) → α
+<pre><code class="language-lean"># inductive Vector (α : Type u) : Nat → Type u
+#   | nil  : Vector α 0
+#   | cons : α → {n : Nat} → Vector α n → Vector α (n+1)
+# namespace Vector
+def head : Vector α (n+1) → α
   | cons a as =&gt; a
 
 def tail : Vector α (n+1) → Vector α n
@@ -1265,9 +1274,9 @@ def map (f : α → β → γ) : Vector α n → Vector β n → Vector γ n
 def zip : Vector α n → Vector β n → Vector (α × β) n
   | nil,       nil       =&gt; nil
   | cons a as, cons b bs =&gt; cons (a, b) (zip as bs)
-<span class="boring">end Vector
-</span></code></pre>
-<h2><a class="header" href="#match-expressions" id="match-expressions">Match Expressions</a></h2>
+# end Vector
+</code></pre>
+<h2 id="match-expressions"><a class="header" href="#match-expressions">Match Expressions</a></h2>
 <p>Lean also provides a compiler for <em>match-with</em> expressions found in
 many functional languages.</p>
 <pre><code class="language-lean">def isNotZero (m : Nat) : Bool :=
@@ -1339,7 +1348,7 @@ example (h₀ : ∃ x, p x) (h₁ : ∃ y, q y)
   let ⟨y, qy⟩ := h₁
   ⟨x, y, px, qy⟩
 </code></pre>
-<h2><a class="header" href="#local-recursive-declarations-1" id="local-recursive-declarations-1">Local Recursive Declarations</a></h2>
+<h2 id="local-recursive-declarations-1"><a class="header" href="#local-recursive-declarations-1">Local Recursive Declarations</a></h2>
 <p>You can define local recursive declarations using the <code>let rec</code> keyword.</p>
 <pre><code class="language-lean">def replicate (n : Nat) (a : α) : List α :=
   let rec loop : Nat → List α → List α
@@ -1352,16 +1361,16 @@ example (h₀ : ∃ x, p x) (h₁ : ∃ y, q y)
 </code></pre>
 <p>Lean creates an auxiliary declaration for each <code>let rec</code>. In the example above,
 it created the declaration <code>replicate.loop</code> for the <code>let rec loop</code> occurring at <code>replicate</code>.
-Note that, Lean &quot;closes&quot; the declaration by adding any local variable occurring in the
+Note that, Lean "closes" the declaration by adding any local variable occurring in the
 <code>let rec</code> declaration as additional parameters. For example, the local variable <code>a</code> occurs
 at <code>let rec loop</code>.</p>
 <p>You can also use <code>let rec</code> in tactic mode and for creating proofs by induction.</p>
-<pre><code class="language-lean"><span class="boring">def replicate (n : Nat) (a : α) : List α :=
-</span><span class="boring"> let rec loop : Nat → List α → List α
-</span><span class="boring">   | 0,   as =&gt; as
-</span><span class="boring">   | n+1, as =&gt; loop n (a::as)
-</span><span class="boring"> loop n []
-</span>theorem length_replicate (n : Nat) (a : α) : (replicate n a).length = n := by
+<pre><code class="language-lean"># def replicate (n : Nat) (a : α) : List α :=
+#  let rec loop : Nat → List α → List α
+#    | 0,   as =&gt; as
+#    | n+1, as =&gt; loop n (a::as)
+#  loop n []
+theorem length_replicate (n : Nat) (a : α) : (replicate n a).length = n := by
   let rec aux (n : Nat) (as : List α)
               : (replicate.loop a n as).length = n + as.length := by
     match n with
@@ -1387,7 +1396,7 @@ where
     | 0   =&gt; simp [replicate.loop]
     | n+1 =&gt; simp [replicate.loop, aux n, Nat.add_succ, Nat.succ_add]
 </code></pre>
-<h2><a class="header" href="#exercises" id="exercises">Exercises</a></h2>
+<h2 id="exercises"><a class="header" href="#exercises">Exercises</a></h2>
 <ol>
 <li>
 <p>Open a namespace <code>Hidden</code> to avoid naming conflicts, and use the
@@ -1431,16 +1440,16 @@ def sampleExpr : Expr :=
 </code></pre>
 <p>Here <code>sampleExpr</code> represents <code>(v₀ * 7) + (2 * v₁)</code>.</p>
 <p>Write a function that evaluates such an expression, evaluating each <code>var n</code> to <code>v n</code>.</p>
-<pre><code class="language-lean"><span class="boring">inductive Expr where
-</span><span class="boring">  | const : Nat → Expr
-</span><span class="boring">  | var : Nat → Expr
-</span><span class="boring">  | plus : Expr → Expr → Expr
-</span><span class="boring">  | times : Expr → Expr → Expr
-</span><span class="boring">  deriving Repr
-</span><span class="boring">open Expr
-</span><span class="boring">def sampleExpr : Expr :=
-</span><span class="boring">  plus (times (var 0) (const 7)) (times (const 2) (var 1))
-</span>def eval (v : Nat → Nat) : Expr → Nat
+<pre><code class="language-lean"># inductive Expr where
+#   | const : Nat → Expr
+#   | var : Nat → Expr
+#   | plus : Expr → Expr → Expr
+#   | times : Expr → Expr → Expr
+#   deriving Repr
+# open Expr
+# def sampleExpr : Expr :=
+#   plus (times (var 0) (const 7)) (times (const 2) (var 1))
+def eval (v : Nat → Nat) : Expr → Nat
   | const n     =&gt; sorry
   | var n       =&gt; v n
   | plus e₁ e₂  =&gt; sorry
@@ -1454,24 +1463,24 @@ def sampleVal : Nat → Nat
 -- Try it out. You should get 47 here.
 -- #eval eval sampleVal sampleExpr
 </code></pre>
-<p>Implement &quot;constant fusion,&quot; a procedure that simplifies subterms like
+<p>Implement "constant fusion," a procedure that simplifies subterms like
 <code>5 + 7</code> to <code>12</code>. Using the auxiliary function <code>simpConst</code>,
-define a function &quot;fuse&quot;: to simplify a plus or a times, first
+define a function "fuse": to simplify a plus or a times, first
 simplify the arguments recursively, and then apply <code>simpConst</code> to
 try to simplify the result.</p>
-<pre><code class="language-lean"><span class="boring">inductive Expr where
-</span><span class="boring">  | const : Nat → Expr
-</span><span class="boring">  | var : Nat → Expr
-</span><span class="boring">  | plus : Expr → Expr → Expr
-</span><span class="boring">  | times : Expr → Expr → Expr
-</span><span class="boring">  deriving Repr
-</span><span class="boring">open Expr
-</span><span class="boring">def eval (v : Nat → Nat) : Expr → Nat
-</span><span class="boring">  | const n     =&gt; sorry
-</span><span class="boring">  | var n       =&gt; v n
-</span><span class="boring">  | plus e₁ e₂  =&gt; sorry
-</span><span class="boring">  | times e₁ e₂ =&gt; sorry
-</span>def simpConst : Expr → Expr
+<pre><code class="language-lean"># inductive Expr where
+#   | const : Nat → Expr
+#   | var : Nat → Expr
+#   | plus : Expr → Expr → Expr
+#   | times : Expr → Expr → Expr
+#   deriving Repr
+# open Expr
+# def eval (v : Nat → Nat) : Expr → Nat
+#   | const n     =&gt; sorry
+#   | var n       =&gt; v n
+#   | plus e₁ e₂  =&gt; sorry
+#   | times e₁ e₂ =&gt; sorry
+def simpConst : Expr → Expr
   | plus (const n₁) (const n₂)  =&gt; const (n₁ + n₂)
   | times (const n₁) (const n₂) =&gt; const (n₁ * n₂)
   | e                           =&gt; e
@@ -1492,17 +1501,13 @@ theorem fuse_eq (v : Nat → Nat)
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                        
                             <a rel="prev" href="inductive_types.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
-                        
 
-                        
-                            <a rel="next" href="structures_and_records.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="structures_and_records.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
-                        
 
                         <div style="clear: both"></div>
                     </nav>
@@ -1510,52 +1515,36 @@ theorem fuse_eq (v : Nat → Nat)
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                
                     <a rel="prev" href="inductive_types.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
-                
 
-                
-                    <a rel="next" href="structures_and_records.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="structures_and_records.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
-                
             </nav>
 
         </div>
 
-        
 
-        
 
-        
 
-        
-        <script type="text/javascript">
+        <script>
             window.playground_copyable = true;
-            window.clip_buttons = true;
-            window.tryit_buttons = false;
-            window.side_bar = true;
         </script>
-        
 
-        
 
-        
-        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
-        
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
 
-        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
-        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
 
         <!-- Custom JS scripts -->
-        
 
-        
 
+    </div>
     </body>
 </html>

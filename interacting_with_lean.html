@@ -1,40 +1,27 @@
 <!DOCTYPE HTML>
-<html lang="en" class="sidebar-visible no-js light">
+<html lang="en" class="light" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
         <title>Interacting with Lean - Theorem Proving in Lean 4</title>
-        
-        
 
 
         <!-- Custom HTML head -->
         
-
-
-        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="theme-color" content="#ffffff" />
+        <meta name="theme-color" content="#ffffff">
 
-        
         <link rel="icon" href="favicon.svg">
-        
-        
         <link rel="shortcut icon" href="favicon.png">
-        
         <link rel="stylesheet" href="css/variables.css">
         <link rel="stylesheet" href="css/general.css">
         <link rel="stylesheet" href="css/chrome.css">
-        
         <link rel="stylesheet" href="css/print.css" media="print">
-        
 
         <!-- Fonts -->
         <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
-        
         <link rel="stylesheet" href="fonts/fonts.css">
-        
 
         <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="highlight.css">
@@ -42,111 +29,134 @@
         <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
-        
 
-        
     </head>
-    <body>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
         <!-- Provide site root to javascript -->
-        <script type="text/javascript">
+        <script>
             var path_to_root = "";
             var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
-        <script type="text/javascript">
+        <script>
             try {
                 var theme = localStorage.getItem('mdbook-theme');
                 var sidebar = localStorage.getItem('mdbook-sidebar');
 
-                if (theme && theme.startsWith('"') && theme.endsWith('"')) {
+                if (theme.startsWith('"') && theme.endsWith('"')) {
                     localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
                 }
 
-                if (sidebar && sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
                     localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
                 }
             } catch (e) { }
         </script>
 
         <!-- Set the theme before any content is loaded, prevents flash -->
-        <script type="text/javascript">
+        <script>
             var theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
             var html = document.querySelector('html');
-            html.classList.remove('no-js')
             html.classList.remove('light')
             html.classList.add(theme);
-            html.classList.add('js');
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
         </script>
 
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
         <!-- Hide / unhide sidebar before it is displayed -->
-        <script type="text/javascript">
-            var html = document.querySelector('html');
-            var sidebar = 'hidden';
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
             }
-            html.classList.remove('sidebar-visible');
-            html.classList.add("sidebar-" + sidebar);
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
                 <ol class="chapter"><li class="chapter-item expanded affix "><a href="title_page.html">Theorem Proving in Lean 4</a></li><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="dependent_type_theory.html"><strong aria-hidden="true">2.</strong> Dependent Type Theory</a></li><li class="chapter-item expanded "><a href="propositions_and_proofs.html"><strong aria-hidden="true">3.</strong> Propositions and Proofs</a></li><li class="chapter-item expanded "><a href="quantifiers_and_equality.html"><strong aria-hidden="true">4.</strong> Quantifiers and Equality</a></li><li class="chapter-item expanded "><a href="tactics.html"><strong aria-hidden="true">5.</strong> Tactics</a></li><li class="chapter-item expanded "><a href="interacting_with_lean.html" class="active"><strong aria-hidden="true">6.</strong> Interacting with Lean</a></li><li class="chapter-item expanded "><a href="inductive_types.html"><strong aria-hidden="true">7.</strong> Inductive Types</a></li><li class="chapter-item expanded "><a href="induction_and_recursion.html"><strong aria-hidden="true">8.</strong> Induction and Recursion</a></li><li class="chapter-item expanded "><a href="structures_and_records.html"><strong aria-hidden="true">9.</strong> Structures and Records</a></li><li class="chapter-item expanded "><a href="type_classes.html"><strong aria-hidden="true">10.</strong> Type Classes</a></li><li class="chapter-item expanded "><a href="conv.html"><strong aria-hidden="true">11.</strong> The Conversion Tactic Mode</a></li><li class="chapter-item expanded "><a href="axioms_and_computation.html"><strong aria-hidden="true">12.</strong> Axioms and Computation</a></li></ol>
             </div>
-            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
         </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
 
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
-                
-                <div id="menu-bar-hover-placeholder"></div>
-                <div id="menu-bar" class="menu-bar sticky bordered">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
                     <div class="left-buttons">
-                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
                             <i class="fa fa-bars"></i>
-                        </button>
+                        </label>
                         <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
                             <i class="fa fa-paint-brush"></i>
                         </button>
                         <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        
                         <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
-                        
                     </div>
 
                     <h1 class="menu-title">Theorem Proving in Lean 4</h1>
 
                     <div class="right-buttons">
-                        
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
-                        
-                        
                         <a href="https://github.com/leanprover/theorem_proving_in_lean4" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        
+
                     </div>
                 </div>
 
-                
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -154,10 +164,9 @@
                         </ul>
                     </div>
                 </div>
-                
 
                 <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
-                <script type="text/javascript">
+                <script>
                     document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
                     document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
                     Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
@@ -167,7 +176,7 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1><a class="header" href="#interacting-with-lean" id="interacting-with-lean">Interacting with Lean</a></h1>
+                        <h1 id="interacting-with-lean"><a class="header" href="#interacting-with-lean">Interacting with Lean</a></h1>
 <p>You are now familiar with the fundamentals of dependent type theory,
 both as a language for defining mathematical objects and a language
 for constructing proofs. The one thing you are missing is a mechanism
@@ -178,7 +187,7 @@ theory to explore some pragmatic aspects of interacting with Lean.</p>
 <p>Not all of the information found here will be useful to you right
 away. We recommend skimming this section to get a sense of Lean's
 features, and then returning to it as necessary.</p>
-<h2><a class="header" href="#importing-files" id="importing-files">Importing Files</a></h2>
+<h2 id="importing-files"><a class="header" href="#importing-files">Importing Files</a></h2>
 <p>The goal of Lean's front end is to interpret user input, construct
 formal expressions, and check that they are well formed and type
 correct. Lean also supports the use of various editors, which provide
@@ -190,7 +199,7 @@ libraries, or develop their own projects across multiple files. When
 Lean starts, it automatically imports the contents of the library
 <code>Init</code> folder, which includes a number of fundamental definitions
 and constructions. As a result, most of the examples we present here
-work &quot;out of the box.&quot;</p>
+work "out of the box."</p>
 <p>If you want to use additional files, however, they need to be imported
 manually, via an <code>import</code> statement at the beginning of a file. The
 command</p>
@@ -204,7 +213,7 @@ By default, it includes the standard library directory, and (in some contexts)
 the root of the user's local project.</p>
 <p>Importing is transitive. In other words, if you import <code>Foo</code> and <code>Foo</code> imports <code>Bar</code>,
 then you also have access to the contents of <code>Bar</code>, and do not need to import it explicitly.</p>
-<h2><a class="header" href="#more-on-sections" id="more-on-sections">More on Sections</a></h2>
+<h2 id="more-on-sections"><a class="header" href="#more-on-sections">More on Sections</a></h2>
 <p>Lean provides various sectioning mechanisms to help structure a
 theory. You saw in <a href="./dependent_type_theory.html#variables-and-sections">Variables and Sections</a> that the
 <code>section</code> command makes it possible not only to group together
@@ -239,7 +248,7 @@ automatically. Similarly, Lean detects the occurrence of <code>x</code> in
 <code>t1</code> and <code>t2</code>, and inserts it automatically there, too.
 Note that <code>double</code> does <em>not</em> have <code>y</code> as argument. Variables are only
 included in declarations where they are actually used.</p>
-<h2><a class="header" href="#more-on-namespaces" id="more-on-namespaces">More on Namespaces</a></h2>
+<h2 id="more-on-namespaces"><a class="header" href="#more-on-namespaces">More on Namespaces</a></h2>
 <p>In Lean, identifiers are given by hierarchical <em>names</em> like
 <code>Foo.Bar.baz</code>. We saw in <a href="./dependent_type_theory.html#namespaces">Namespaces</a> that Lean provides
 mechanisms for working with hierarchical names. The command
@@ -285,7 +294,7 @@ open String
 #check Bool.add             -- Bool → Bool → Bool
 #check _root_.add           -- Type → Type → Type
 
-#check add &quot;hello&quot; &quot;world&quot;  -- String
+#check add "hello" "world"  -- String
 #check add true false       -- Bool
 #check add Nat Nat          -- Type
 </code></pre>
@@ -322,7 +331,7 @@ overloading of common names.</p>
 namespace, so that whenever the namespace is open, these aliases are
 available. If this command is used outside a namespace, the aliases
 are exported to the top level.</p>
-<h2><a class="header" href="#attributes" id="attributes">Attributes</a></h2>
+<h2 id="attributes"><a class="header" href="#attributes">Attributes</a></h2>
 <p>The main function of Lean is to translate user input to formal
 expressions that are checked by the kernel for correctness and then
 stored in the environment for later use. But some commands have other
@@ -351,9 +360,9 @@ example : isPrefix [1, 2, 3] [1, 2, 3] := by
 </code></pre>
 <p>The simplifier then proves <code>isPrefix [1, 2, 3] [1, 2, 3]</code> by rewriting it to <code>True</code>.</p>
 <p>One can also assign the attribute any time after the definition takes place:</p>
-<pre><code class="language-lean"><span class="boring">def isPrefix (l₁ : List α) (l₂ : List α) : Prop :=
-</span><span class="boring"> ∃ t, l₁ ++ t = l₂
-</span>theorem List.isPrefix_self (as : List α) : isPrefix as as :=
+<pre><code class="language-lean"># def isPrefix (l₁ : List α) (l₂ : List α) : Prop :=
+#  ∃ t, l₁ ++ t = l₂
+theorem List.isPrefix_self (as : List α) : isPrefix as as :=
   ⟨[], by simp⟩
 
 attribute [simp] List.isPrefix_self
@@ -361,9 +370,9 @@ attribute [simp] List.isPrefix_self
 <p>In all these cases, the attribute remains in effect in any file that
 imports the one in which the declaration occurs. Adding the <code>local</code>
 modifier restricts the scope:</p>
-<pre><code class="language-lean"><span class="boring">def isPrefix (l₁ : List α) (l₂ : List α) : Prop :=
-</span><span class="boring"> ∃ t, l₁ ++ t = l₂
-</span>section
+<pre><code class="language-lean"># def isPrefix (l₁ : List α) (l₂ : List α) : Prop :=
+#  ∃ t, l₁ ++ t = l₂
+section
 
 theorem List.isPrefix_self (as : List α) : isPrefix as as :=
   ⟨[], by simp⟩
@@ -393,9 +402,9 @@ theorem List.isPrefix_self (as : List α) : as ≤ as :=
   ⟨[], by simp⟩
 </code></pre>
 <p>That assignment can also be made local:</p>
-<pre><code class="language-lean"><span class="boring">def isPrefix (l₁ : List α) (l₂ : List α) : Prop :=
-</span><span class="boring">  ∃ t, l₁ ++ t = l₂
-</span>def instLe : LE (List α) :=
+<pre><code class="language-lean"># def isPrefix (l₁ : List α) (l₂ : List α) : Prop :=
+#   ∃ t, l₁ ++ t = l₂
+def instLe : LE (List α) :=
   { le := isPrefix }
 
 section
@@ -417,13 +426,13 @@ discuss Lean's mechanisms for setting options, which does <em>not</em> follow
 this pattern: options can <em>only</em> be set locally, which is to say,
 their scope is always restricted to the current section or current
 file.</p>
-<h2><a class="header" href="#more-on-implicit-arguments" id="more-on-implicit-arguments">More on Implicit Arguments</a></h2>
+<h2 id="more-on-implicit-arguments"><a class="header" href="#more-on-implicit-arguments">More on Implicit Arguments</a></h2>
 <p>In <a href="./dependent_type_theory.html#implicit-arguments">Section Implicit Arguments</a>,
 we saw that if Lean displays the type
 of a term <code>t</code> as <code>{x : α} → β x</code>, then the curly brackets
 indicate that <code>x</code> has been marked as an <em>implicit argument</em> to
 <code>t</code>. This means that whenever you write <code>t</code>, a placeholder, or
-&quot;hole,&quot; is inserted, so that <code>t</code> is replaced by <code>@t _</code>. If you
+"hole," is inserted, so that <code>t</code> is replaced by <code>@t _</code>. If you
 don't want that to happen, you have to write <code>@t</code> instead.</p>
 <p>Notice that implicit arguments are inserted eagerly. Suppose we define
 a function <code>f (x : Nat) {y : Nat} (z : Nat)</code> with the arguments
@@ -520,7 +529,7 @@ variable (euclr : euclidean r)
 <p>There is a third kind of implicit argument that is denoted with square
 brackets, <code>[</code> and <code>]</code>. These are used for type classes, as
 explained in <a href="./type_classes.html">Chapter Type Classes</a>.</p>
-<h2><a class="header" href="#notation" id="notation">Notation</a></h2>
+<h2 id="notation"><a class="header" href="#notation">Notation</a></h2>
 <p>Identifiers in Lean can include any alphanumeric characters, including
 Greek characters (other than ∀ , Σ , and λ , which, as we have seen,
 have a special meaning in the dependent type theory). They can also
@@ -528,7 +537,7 @@ include subscripts, which can be entered by typing <code>\_</code> followed by
 the desired subscripted character.</p>
 <p>Lean's parser is extensible, which is to say, we can define new notation.</p>
 <p>Lean's syntax can be extended and customized by users at every level,
-ranging from basic &quot;mixfix&quot; notations to custom elaborators.  In fact,
+ranging from basic "mixfix" notations to custom elaborators.  In fact,
 all builtin syntax is parsed and processed using the same mechanisms
 and APIs open to users.  In this section, we will describe and explain
 the various extension points.</p>
@@ -541,30 +550,30 @@ ability to factor out common boilerplate code into (well-behaved)
 macros and to embed entire custom domain specific languages (DSLs) to
 textually encode subproblems efficiently and readably can be of great
 benefit to both programmers and proof engineers alike.</p>
-<h3><a class="header" href="#notations-and-precedence" id="notations-and-precedence">Notations and Precedence</a></h3>
+<h3 id="notations-and-precedence"><a class="header" href="#notations-and-precedence">Notations and Precedence</a></h3>
 <p>The most basic syntax extension commands allow introducing new (or
 overloading existing) prefix, infix, and postfix operators.</p>
-<pre><code class="language-lean">infixl:65   &quot; + &quot; =&gt; HAdd.hAdd  -- left-associative
-infix:50    &quot; = &quot; =&gt; Eq         -- non-associative
-infixr:80   &quot; ^ &quot; =&gt; HPow.hPow  -- right-associative
-prefix:100  &quot;-&quot;   =&gt; Neg.neg
-<span class="boring">set_option quotPrecheck false
-</span>postfix:max &quot;⁻¹&quot;  =&gt; Inv.inv
+<pre><code class="language-lean">infixl:65   " + " =&gt; HAdd.hAdd  -- left-associative
+infix:50    " = " =&gt; Eq         -- non-associative
+infixr:80   " ^ " =&gt; HPow.hPow  -- right-associative
+prefix:100  "-"   =&gt; Neg.neg
+# set_option quotPrecheck false
+postfix:max "⁻¹"  =&gt; Inv.inv
 </code></pre>
 <p>After the initial command name describing the operator kind (its
-&quot;fixity&quot;), we give the <em>parsing precedence</em> of the operator preceded
+"fixity"), we give the <em>parsing precedence</em> of the operator preceded
 by a colon <code>:</code>, then a new or existing token surrounded by double
 quotes (the whitespace is used for pretty printing), then the function
 this operator should be translated to after the arrow <code>=&gt;</code>.</p>
-<p>The precedence is a natural number describing how &quot;tightly&quot; an
+<p>The precedence is a natural number describing how "tightly" an
 operator binds to its arguments, encoding the order of operations.  We
 can make this more precise by looking at the commands the above unfold to:</p>
-<pre><code class="language-lean">notation:65 lhs:65 &quot; + &quot; rhs:66 =&gt; HAdd.hAdd lhs rhs
-notation:50 lhs:51 &quot; = &quot; rhs:51 =&gt; Eq lhs rhs
-notation:80 lhs:81 &quot; ^ &quot; rhs:80 =&gt; HPow.hPow lhs rhs
-notation:100 &quot;-&quot; arg:100 =&gt; Neg.neg arg
-<span class="boring">set_option quotPrecheck false
-</span>notation:1024 arg:1024 &quot;⁻¹&quot; =&gt; Inv.inv arg  -- `max` is a shorthand for precedence 1024
+<pre><code class="language-lean">notation:65 lhs:65 " + " rhs:66 =&gt; HAdd.hAdd lhs rhs
+notation:50 lhs:51 " = " rhs:51 =&gt; Eq lhs rhs
+notation:80 lhs:81 " ^ " rhs:80 =&gt; HPow.hPow lhs rhs
+notation:100 "-" arg:100 =&gt; Neg.neg arg
+# set_option quotPrecheck false
+notation:1024 arg:1024 "⁻¹" =&gt; Inv.inv arg  -- `max` is a shorthand for precedence 1024
 </code></pre>
 <p>It turns out that all commands from the first code block are in fact
 command <em>macros</em> translating to the more general <code>notation</code> command.
@@ -580,8 +589,8 @@ has precedence one greater than the notation itself.  In contrast,
 <code>infixr</code> reuses the notation's precedence for the right-hand side
 operand, so <code>a ^ b ^ c</code> <em>can</em> be parsed as <code>a ^ (b ^ c)</code>.  Note that
 if we used <code>notation</code> directly to introduce an infix notation like</p>
-<pre><code class="language-lean"><span class="boring">set_option quotPrecheck false
-</span>notation:65 lhs:65 &quot; ~ &quot; rhs:65 =&gt; wobble lhs rhs
+<pre><code class="language-lean"># set_option quotPrecheck false
+notation:65 lhs:65 " ~ " rhs:65 =&gt; wobble lhs rhs
 </code></pre>
 <p>where the precedences do not sufficiently determine associativity,
 Lean's parser will default to right associativity.  More precisely,
@@ -592,13 +601,13 @@ precedence allows), not stopping after <code>b</code> but parsing <code>~ c</cod
 Thus the term is equivalent to <code>a ~ (b ~ c)</code>.</p>
 <p>As mentioned above, the <code>notation</code> command allows us to define
 arbitrary <em>mixfix</em> syntax freely mixing tokens and placeholders.</p>
-<pre><code class="language-lean"><span class="boring">set_option quotPrecheck false
-</span>notation:max &quot;(&quot; e &quot;)&quot; =&gt; e
-notation:10 Γ &quot; ⊢ &quot; e &quot; : &quot; τ =&gt; Typing Γ e τ
+<pre><code class="language-lean"># set_option quotPrecheck false
+notation:max "(" e ")" =&gt; e
+notation:10 Γ " ⊢ " e " : " τ =&gt; Typing Γ e τ
 </code></pre>
 <p>Placeholders without precedence default to <code>0</code>, i.e. they accept notations of any precedence in their place.
 If two notations overlap, we again apply the longest parse rule:</p>
-<pre><code class="language-lean">notation:65 a &quot; + &quot; b:66 &quot; + &quot; c:66 =&gt; a + b - c
+<pre><code class="language-lean">notation:65 a " + " b:66 " + " c:66 =&gt; a + b - c
 #eval 1 + 2 + 3  -- 0
 </code></pre>
 <p>The new notation is preferred to the binary notation since the latter,
@@ -606,7 +615,7 @@ before chaining, would stop parsing after <code>1 + 2</code>.  If there are
 multiple notations accepting the same longest parse, the choice will
 be delayed until elaboration, which will fail unless exactly one
 overload is type correct.</p>
-<h2><a class="header" href="#coercions" id="coercions">Coercions</a></h2>
+<h2 id="coercions"><a class="header" href="#coercions">Coercions</a></h2>
 <p>In Lean, the type of natural numbers, <code>Nat</code>, is different from the
 type of integers, <code>Int</code>. But there is a function <code>Int.ofNat</code> that
 embeds the natural numbers in the integers, meaning that we can view
@@ -619,7 +628,7 @@ variable (i j : Int)
 #check i + m + j  -- i + Int.ofNat m + j : Int
 #check i + m + n  -- i + Int.ofNat m + Int.ofNat n : Int
 </code></pre>
-<h2><a class="header" href="#displaying-information" id="displaying-information">Displaying Information</a></h2>
+<h2 id="displaying-information"><a class="header" href="#displaying-information">Displaying Information</a></h2>
 <p>There are a number of ways in which you can query Lean for information
 about its current state and the objects and theorems that are
 available in the current context. You have already seen two of the
@@ -650,7 +659,7 @@ def foo {α : Type u} (x : α) : α := x
 #check @foo
 #print foo
 </code></pre>
-<h2><a class="header" href="#setting-options" id="setting-options">Setting Options</a></h2>
+<h2 id="setting-options"><a class="header" href="#setting-options">Setting Options</a></h2>
 <p>Lean maintains a number of internal variables that can be set by users
 to control its behavior. The syntax for doing so is as follows:</p>
 <pre><code>set_option &lt;name&gt; &lt;value&gt;
@@ -708,7 +717,7 @@ Lean also has a family of attributes that control the elaboration strategy. A de
 Once again, these attributes can be assigned and reassigned after an object is defined, and you can use the ``local`` modifier to limit their scope. Moreover, using the ``@`` symbol in front of an identifier in an expression instructs the elaborator to use the ``[elab_simple]`` strategy; the idea is that, when you provide the tricky parameters explicitly, you want the elaborator to weigh that information heavily. In fact, Lean offers an alternative annotation, ``@@``, which leaves parameters before the first higher-order parameter implicit. For example, ``@@eq.subst`` leaves the type of the equation implicit, but makes the context of the substitution explicit.
 
 -->
-<h2><a class="header" href="#using-the-library" id="using-the-library">Using the Library</a></h2>
+<h2 id="using-the-library"><a class="header" href="#using-the-library">Using the Library</a></h2>
 <p>To use Lean effectively you will inevitably need to make use of
 definitions and theorems in the library. Recall that the <code>import</code>
 command at the beginning of a file imports previously compiled results
@@ -784,7 +793,7 @@ for them as well:</p>
 #check @Eq.refl
 #check @Eq.subst
 </code></pre>
-<h2><a class="header" href="#auto-bound-implicit-arguments" id="auto-bound-implicit-arguments">Auto Bound Implicit Arguments</a></h2>
+<h2 id="auto-bound-implicit-arguments"><a class="header" href="#auto-bound-implicit-arguments">Auto Bound Implicit Arguments</a></h2>
 <p>In the previous section, we have shown how implicit arguments make functions more convenient to use.
 However, functions such as <code>compose</code> are still quite verbose to define. Note that the universe
 polymorphic <code>compose</code> is even more verbose than the one previously defined.</p>
@@ -818,22 +827,22 @@ the command <code>set_option autoImplicit false</code>.</p>
 -- def compose (g : β → γ) (f : α → β) (x : α) : γ :=
 --   g (f x)
 </code></pre>
-<h2><a class="header" href="#implicit-lambdas" id="implicit-lambdas">Implicit Lambdas</a></h2>
+<h2 id="implicit-lambdas"><a class="header" href="#implicit-lambdas">Implicit Lambdas</a></h2>
 <p>In Lean 3 stdlib, we find many
 <a href="https://github.com/leanprover/lean/blob/master/library/init/category/reader.lean#L39">instances</a> of the dreadful <code>@</code>+<code>_</code> idiom.
 It is often used when the expected type is a function type with implicit arguments,
 and we have a constant (<code>reader_t.pure</code> in the example) which also takes implicit arguments. In Lean 4, the elaborator automatically introduces lambdas
 for consuming implicit arguments. We are still exploring this feature and analyzing its impact, but the experience so far has been very positive. Here is the example from the link above using Lean 4 implicit lambdas.</p>
-<pre><code class="language-lean"><span class="boring">variable (ρ : Type) (m : Type → Type) [Monad m]
-</span>instance : Monad (ReaderT ρ m) where
+<pre><code class="language-lean"># variable (ρ : Type) (m : Type → Type) [Monad m]
+instance : Monad (ReaderT ρ m) where
   pure := ReaderT.pure
   bind := ReaderT.bind
 </code></pre>
 <p>Users can disable the implicit lambda feature by using <code>@</code> or writing
 a lambda expression with <code>{}</code> or <code>[]</code> binder annotations.  Here are
 few examples</p>
-<pre><code class="language-lean"><span class="boring">namespace ex2
-</span>def id1 : {α : Type} → α → α :=
+<pre><code class="language-lean"># namespace ex2
+def id1 : {α : Type} → α → α :=
   fun x =&gt; x
 
 def listId : List ({α : Type} → α → α) :=
@@ -854,15 +863,15 @@ def id4 : {α : Type} → α → α :=
 -- because we used the binder annotation `{...}`
 def id5 : {α : Type} → α → α :=
   fun {α} x =&gt; id1 x
-<span class="boring">end ex2
-</span></code></pre>
-<h2><a class="header" href="#sugar-for-simple-functions" id="sugar-for-simple-functions">Sugar for Simple Functions</a></h2>
+# end ex2
+</code></pre>
+<h2 id="sugar-for-simple-functions"><a class="header" href="#sugar-for-simple-functions">Sugar for Simple Functions</a></h2>
 <p>In Lean 3, we can create simple functions from infix operators by
 using parentheses. For example, <code>(+1)</code> is sugar for <code>fun x, x + 1</code>. In
 Lean 4, we generalize this notation using <code>·</code> as a placeholder. Here
 are a few examples:</p>
-<pre><code class="language-lean"><span class="boring">namespace ex3
-</span>#check (· + 1)
+<pre><code class="language-lean"># namespace ex3
+#check (· + 1)
 -- fun a =&gt; a + 1
 #check (2 - ·)
 -- fun a =&gt; 2 - a
@@ -877,14 +886,14 @@ def f (x y z : Nat) :=
 
 #eval [(1, 2), (3, 4), (5, 6)].map (·.1)
 -- [1, 3, 5]
-<span class="boring">end ex3
-</span></code></pre>
+# end ex3
+</code></pre>
 <p>As in Lean 3, the notation is activated using parentheses, and the lambda abstraction is created by collecting the nested <code>·</code>s.
 The collection is interrupted by nested parentheses. In the following example, two different lambda expressions are created.</p>
 <pre><code class="language-lean">#check (Prod.mk · (· + 1))
 -- fun a =&gt; (a, fun b =&gt; b + 1)
 </code></pre>
-<h2><a class="header" href="#named-arguments" id="named-arguments">Named Arguments</a></h2>
+<h2 id="named-arguments"><a class="header" href="#named-arguments">Named Arguments</a></h2>
 <p>Named arguments enable you to specify an argument for a parameter by
 matching the argument with its name rather than with its position in
 the parameter list.  If you don't remember the order of the parameters
@@ -962,17 +971,13 @@ inferred by Lean, and we want to avoid a sequence of <code>_</code>s.</p>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                        
                             <a rel="prev" href="tactics.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
-                        
 
-                        
-                            <a rel="next" href="inductive_types.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="inductive_types.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
-                        
 
                         <div style="clear: both"></div>
                     </nav>
@@ -980,52 +985,36 @@ inferred by Lean, and we want to avoid a sequence of <code>_</code>s.</p>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                
                     <a rel="prev" href="tactics.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
-                
 
-                
-                    <a rel="next" href="inductive_types.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="inductive_types.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
-                
             </nav>
 
         </div>
 
-        
 
-        
 
-        
 
-        
-        <script type="text/javascript">
+        <script>
             window.playground_copyable = true;
-            window.clip_buttons = true;
-            window.tryit_buttons = false;
-            window.side_bar = true;
         </script>
-        
 
-        
 
-        
-        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
-        
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
 
-        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
-        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
 
         <!-- Custom JS scripts -->
-        
 
-        
 
+    </div>
     </body>
 </html>

@@ -1,40 +1,27 @@
 <!DOCTYPE HTML>
-<html lang="en" class="sidebar-visible no-js light">
+<html lang="en" class="light" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
         <title>Propositions and Proofs - Theorem Proving in Lean 4</title>
-        
-        
 
 
         <!-- Custom HTML head -->
         
-
-
-        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="theme-color" content="#ffffff" />
+        <meta name="theme-color" content="#ffffff">
 
-        
         <link rel="icon" href="favicon.svg">
-        
-        
         <link rel="shortcut icon" href="favicon.png">
-        
         <link rel="stylesheet" href="css/variables.css">
         <link rel="stylesheet" href="css/general.css">
         <link rel="stylesheet" href="css/chrome.css">
-        
         <link rel="stylesheet" href="css/print.css" media="print">
-        
 
         <!-- Fonts -->
         <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
-        
         <link rel="stylesheet" href="fonts/fonts.css">
-        
 
         <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="highlight.css">
@@ -42,111 +29,134 @@
         <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
-        
 
-        
     </head>
-    <body>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
         <!-- Provide site root to javascript -->
-        <script type="text/javascript">
+        <script>
             var path_to_root = "";
             var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
-        <script type="text/javascript">
+        <script>
             try {
                 var theme = localStorage.getItem('mdbook-theme');
                 var sidebar = localStorage.getItem('mdbook-sidebar');
 
-                if (theme && theme.startsWith('"') && theme.endsWith('"')) {
+                if (theme.startsWith('"') && theme.endsWith('"')) {
                     localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
                 }
 
-                if (sidebar && sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
                     localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
                 }
             } catch (e) { }
         </script>
 
         <!-- Set the theme before any content is loaded, prevents flash -->
-        <script type="text/javascript">
+        <script>
             var theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
             var html = document.querySelector('html');
-            html.classList.remove('no-js')
             html.classList.remove('light')
             html.classList.add(theme);
-            html.classList.add('js');
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
         </script>
 
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
         <!-- Hide / unhide sidebar before it is displayed -->
-        <script type="text/javascript">
-            var html = document.querySelector('html');
-            var sidebar = 'hidden';
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
             }
-            html.classList.remove('sidebar-visible');
-            html.classList.add("sidebar-" + sidebar);
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
                 <ol class="chapter"><li class="chapter-item expanded affix "><a href="title_page.html">Theorem Proving in Lean 4</a></li><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="dependent_type_theory.html"><strong aria-hidden="true">2.</strong> Dependent Type Theory</a></li><li class="chapter-item expanded "><a href="propositions_and_proofs.html" class="active"><strong aria-hidden="true">3.</strong> Propositions and Proofs</a></li><li class="chapter-item expanded "><a href="quantifiers_and_equality.html"><strong aria-hidden="true">4.</strong> Quantifiers and Equality</a></li><li class="chapter-item expanded "><a href="tactics.html"><strong aria-hidden="true">5.</strong> Tactics</a></li><li class="chapter-item expanded "><a href="interacting_with_lean.html"><strong aria-hidden="true">6.</strong> Interacting with Lean</a></li><li class="chapter-item expanded "><a href="inductive_types.html"><strong aria-hidden="true">7.</strong> Inductive Types</a></li><li class="chapter-item expanded "><a href="induction_and_recursion.html"><strong aria-hidden="true">8.</strong> Induction and Recursion</a></li><li class="chapter-item expanded "><a href="structures_and_records.html"><strong aria-hidden="true">9.</strong> Structures and Records</a></li><li class="chapter-item expanded "><a href="type_classes.html"><strong aria-hidden="true">10.</strong> Type Classes</a></li><li class="chapter-item expanded "><a href="conv.html"><strong aria-hidden="true">11.</strong> The Conversion Tactic Mode</a></li><li class="chapter-item expanded "><a href="axioms_and_computation.html"><strong aria-hidden="true">12.</strong> Axioms and Computation</a></li></ol>
             </div>
-            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
         </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
 
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
-                
-                <div id="menu-bar-hover-placeholder"></div>
-                <div id="menu-bar" class="menu-bar sticky bordered">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
                     <div class="left-buttons">
-                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
                             <i class="fa fa-bars"></i>
-                        </button>
+                        </label>
                         <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
                             <i class="fa fa-paint-brush"></i>
                         </button>
                         <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        
                         <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
-                        
                     </div>
 
                     <h1 class="menu-title">Theorem Proving in Lean 4</h1>
 
                     <div class="right-buttons">
-                        
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
-                        
-                        
                         <a href="https://github.com/leanprover/theorem_proving_in_lean4" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        
+
                     </div>
                 </div>
 
-                
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -154,10 +164,9 @@
                         </ul>
                     </div>
                 </div>
-                
 
                 <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
-                <script type="text/javascript">
+                <script>
                     document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
                     document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
                     Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
@@ -167,12 +176,12 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1><a class="header" href="#propositions-and-proofs" id="propositions-and-proofs">Propositions and Proofs</a></h1>
+                        <h1 id="propositions-and-proofs"><a class="header" href="#propositions-and-proofs">Propositions and Proofs</a></h1>
 <p>By now, you have seen some ways of defining objects and functions in
 Lean. In this chapter, we will begin to explain how to write
 mathematical assertions and proofs in the language of dependent type
 theory as well.</p>
-<h2><a class="header" href="#propositions-as-types" id="propositions-as-types">Propositions as Types</a></h2>
+<h2 id="propositions-as-types"><a class="header" href="#propositions-as-types">Propositions as Types</a></h2>
 <p>One strategy for proving assertions about objects defined in the
 language of dependent type theory is to layer an assertion language
 and a proof language on top of the definition language. But there is
@@ -182,8 +191,8 @@ assertions and proofs in the same general framework.</p>
 <p>For example, we could introduce a new type, <code>Prop</code>, to represent
 propositions, and introduce constructors to build new propositions
 from others.</p>
-<pre><code class="language-lean"><span class="boring">def Implies (p q : Prop) : Prop := p → q
-</span>#check And     -- Prop → Prop → Prop
+<pre><code class="language-lean"># def Implies (p q : Prop) : Prop := p → q
+#check And     -- Prop → Prop → Prop
 #check Or      -- Prop → Prop → Prop
 #check Not     -- Prop → Prop
 #check Implies -- Prop → Prop → Prop
@@ -194,12 +203,12 @@ variable (p q r : Prop)
 #check Implies (And p q) (And q p)  -- Prop
 </code></pre>
 <p>We could then introduce, for each element <code>p : Prop</code>, another type
-<code>Proof p</code>, for the type of proofs of <code>p</code>.  An &quot;axiom&quot; would be a
+<code>Proof p</code>, for the type of proofs of <code>p</code>.  An "axiom" would be a
 constant of such a type.</p>
-<pre><code class="language-lean"><span class="boring">def Implies (p q : Prop) : Prop := p → q
-</span><span class="boring">structure Proof (p : Prop) : Type where
-</span><span class="boring">  proof : p
-</span>#check Proof   -- Proof : Prop → Type
+<pre><code class="language-lean"># def Implies (p q : Prop) : Prop := p → q
+# structure Proof (p : Prop) : Type where
+#   proof : p
+#check Proof   -- Proof : Prop → Type
 
 axiom and_comm (p q : Prop) : Proof (Implies (And p q) (And q p))
 
@@ -213,20 +222,20 @@ propositional logic, we have the rule of modus ponens:</p>
 <p>From a proof of <code>Implies p q</code> and a proof of <code>p</code>, we obtain a proof of <code>q</code>.</p>
 </blockquote>
 <p>We could represent this as follows:</p>
-<pre><code class="language-lean"><span class="boring">def Implies (p q : Prop) : Prop := p → q
-</span><span class="boring">structure Proof (p : Prop) : Type where
-</span><span class="boring">  proof : p
-</span>axiom modus_ponens : (p q : Prop) → Proof (Implies p q) → Proof p → Proof q
+<pre><code class="language-lean"># def Implies (p q : Prop) : Prop := p → q
+# structure Proof (p : Prop) : Type where
+#   proof : p
+axiom modus_ponens : (p q : Prop) → Proof (Implies p q) → Proof p → Proof q
 </code></pre>
 <p>Systems of natural deduction for propositional logic also typically rely on the following rule:</p>
 <blockquote>
-<p>Suppose that, assuming <code>p</code> as a hypothesis, we have a proof of <code>q</code>. Then we can &quot;cancel&quot; the hypothesis and obtain a proof of <code>Implies p q</code>.</p>
+<p>Suppose that, assuming <code>p</code> as a hypothesis, we have a proof of <code>q</code>. Then we can "cancel" the hypothesis and obtain a proof of <code>Implies p q</code>.</p>
 </blockquote>
 <p>We could render this as follows:</p>
-<pre><code class="language-lean"><span class="boring">def Implies (p q : Prop) : Prop := p → q
-</span><span class="boring">structure Proof (p : Prop) : Type where
-</span><span class="boring">  proof : p
-</span>axiom implies_intro : (p q : Prop) → (Proof p → Proof q) → Proof (Implies p q)
+<pre><code class="language-lean"># def Implies (p q : Prop) : Prop := p → q
+# structure Proof (p : Prop) : Type where
+#   proof : p
+axiom implies_intro : (p q : Prop) → (Proof p → Proof q) → Proof (Implies p q)
 </code></pre>
 <p>This approach would provide us with a reasonable way of building assertions and proofs.
 Determining that an expression <code>t</code> is a correct proof of assertion <code>p</code> would then
@@ -269,9 +278,9 @@ with) <code>p</code> is <em>inhabited</em>. It just so happens that the rules fo
 function application and abstraction can conveniently help us keep
 track of which elements of <code>Prop</code> are inhabited. So constructing an
 element <code>t : p</code> tells us that <code>p</code> is indeed true. You can think of
-the inhabitant of <code>p</code> as being the &quot;fact that <code>p</code> is true.&quot; A
-proof of <code>p → q</code> uses &quot;the fact that <code>p</code> is true&quot; to obtain &quot;the
-fact that <code>q</code> is true.&quot;</p>
+the inhabitant of <code>p</code> as being the "fact that <code>p</code> is true." A
+proof of <code>p → q</code> uses "the fact that <code>p</code> is true" to obtain "the
+fact that <code>q</code> is true."</p>
 <p>Indeed, if <code>p : Prop</code> is any proposition, Lean's kernel treats any
 two elements <code>t1 t2 : p</code> as being definitionally equal, much the
 same way as it treats <code>(fun x =&gt; t) s</code> and <code>t[s/x]</code> as
@@ -291,20 +300,20 @@ down and check that they are well-typed that ensures that the
 proposition in question is true. In other words, the expressions
 <em>themselves</em> are the proofs.</p>
 <p>In the exposition below, we will slip back and forth between these two
-ways of talking, at times saying that an expression &quot;constructs&quot; or
-&quot;produces&quot; or &quot;returns&quot; a proof of a proposition, and at other times
-simply saying that it &quot;is&quot; such a proof. This is similar to the way
+ways of talking, at times saying that an expression "constructs" or
+"produces" or "returns" a proof of a proposition, and at other times
+simply saying that it "is" such a proof. This is similar to the way
 that computer scientists occasionally blur the distinction between
-syntax and semantics by saying, at times, that a program &quot;computes&quot; a
+syntax and semantics by saying, at times, that a program "computes" a
 certain function, and at other times speaking as though the program
-&quot;is&quot; the function in question.</p>
+"is" the function in question.</p>
 <p>In any case, all that really matters is the bottom line. To formally
 express a mathematical assertion in the language of dependent type
 theory, we need to exhibit a term <code>p : Prop</code>. To <em>prove</em> that
 assertion, we need to exhibit a term <code>t : p</code>. Lean's task, as a
 proof assistant, is to help us to construct such a term, <code>t</code>, and to
 verify that it is well-formed and has the correct type.</p>
-<h2><a class="header" href="#working-with-propositions-as-types" id="working-with-propositions-as-types">Working with Propositions as Types</a></h2>
+<h2 id="working-with-propositions-as-types"><a class="header" href="#working-with-propositions-as-types">Working with Propositions as Types</a></h2>
 <p>In the propositions-as-types paradigm, theorems involving only <code>→</code>
 can be proved using lambda abstraction and application. In Lean, the
 <code>theorem</code> command introduces a new theorem:</p>
@@ -330,7 +339,7 @@ as defining an element of the associated type. To the kernel type
 checker, there is no difference between the two.</p>
 <p>There are a few pragmatic differences between definitions and
 theorems, however. In normal circumstances, it is never necessary to
-unfold the &quot;definition&quot; of a theorem; by proof irrelevance, any two
+unfold the "definition" of a theorem; by proof irrelevance, any two
 proofs of that theorem are definitionally equal. Once the proof of a
 theorem is complete, typically we only need to know that the proof
 exists; it doesn't matter what the proof is. In light of that fact,
@@ -342,9 +351,9 @@ correctness of one proof does not require knowing the details of
 another.</p>
 <p>As with definitions, the <code>#print</code> command will show you the proof of
 a theorem.</p>
-<pre><code class="language-lean"><span class="boring">variable {p : Prop}
-</span><span class="boring">variable {q : Prop}
-</span>theorem t1 : p → q → p := fun hp : p =&gt; fun hq : q =&gt; hp
+<pre><code class="language-lean"># variable {p : Prop}
+# variable {q : Prop}
+theorem t1 : p → q → p := fun hp : p =&gt; fun hq : q =&gt; hp
 
 #print t1
 </code></pre>
@@ -352,9 +361,9 @@ a theorem.</p>
 viewed as temporary assumptions in the proof of <code>t1</code>.  Lean also
 allows us to specify the type of the final term <code>hp</code>, explicitly,
 with a <code>show</code> statement.</p>
-<pre><code class="language-lean"><span class="boring">variable {p : Prop}
-</span><span class="boring">variable {q : Prop}
-</span>theorem t1 : p → q → p :=
+<pre><code class="language-lean"># variable {p : Prop}
+# variable {q : Prop}
+theorem t1 : p → q → p :=
   fun hp : p =&gt;
   fun hq : q =&gt;
   show p from hp
@@ -365,16 +374,16 @@ nothing more than annotate the type, and, internally, all the
 presentations of <code>t1</code> that we have seen produce the same term.</p>
 <p>As with ordinary definitions, we can move the lambda-abstracted
 variables to the left of the colon:</p>
-<pre><code class="language-lean"><span class="boring">variable {p : Prop}
-</span><span class="boring">variable {q : Prop}
-</span>theorem t1 (hp : p) (hq : q) : p := hp
+<pre><code class="language-lean"># variable {p : Prop}
+# variable {q : Prop}
+theorem t1 (hp : p) (hq : q) : p := hp
 
 #print t1    -- p → q → p
 </code></pre>
 <p>Now we can apply the theorem <code>t1</code> just as a function application.</p>
-<pre><code class="language-lean"><span class="boring">variable {p : Prop}
-</span><span class="boring">variable {q : Prop}
-</span>theorem t1 (hp : p) (hq : q) : p := hp
+<pre><code class="language-lean"># variable {p : Prop}
+# variable {q : Prop}
+theorem t1 (hp : p) (hq : q) : p := hp
 
 axiom hp : p
 
@@ -389,7 +398,7 @@ element.</p>
 theorem ex : 1 = 0 :=
   False.elim unsound
 </code></pre>
-<p>Declaring an &quot;axiom&quot; <code>hp : p</code> is tantamount to declaring that <code>p</code>
+<p>Declaring an "axiom" <code>hp : p</code> is tantamount to declaring that <code>p</code>
 is true, as witnessed by <code>hp</code>. Applying the theorem
 <code>t1 : p → q → p</code> to the fact <code>hp : p</code> that <code>p</code> is true yields the theorem
 <code>t1 hp : q → p</code>.</p>
@@ -399,8 +408,8 @@ is true, as witnessed by <code>hp</code>. Applying the theorem
 #print t1
 </code></pre>
 <p>The type of <code>t1</code> is now <code>∀ {p q : Prop}, p → q → p</code>. We can read
-this as the assertion &quot;for every pair of propositions <code>p q</code>, we have
-<code>p → q → p</code>.&quot; For example, we can move all parameters to the right
+this as the assertion "for every pair of propositions <code>p q</code>, we have
+<code>p → q → p</code>." For example, we can move all parameters to the right
 of the colon:</p>
 <pre><code class="language-lean">theorem t1 : ∀ {p q : Prop}, p → q → p :=
   fun {p q : Prop} (hp : p) (hq : q) =&gt; hp
@@ -453,9 +462,9 @@ theorem t2 (h₁ : q → r) (h₂ : p → q) : p → r :=
 <p>Note that it is often useful to use numeric unicode subscripts,
 entered as <code>\0</code>, <code>\1</code>, <code>\2</code>, ..., for hypotheses, as we did in
 this example.</p>
-<h2><a class="header" href="#propositional-logic" id="propositional-logic">Propositional Logic</a></h2>
+<h2 id="propositional-logic"><a class="header" href="#propositional-logic">Propositional Logic</a></h2>
 <p>Lean defines all the standard logical connectives and notation. The propositional connectives come with the following notation:</p>
-<table><thead><tr><th>Ascii</th><th>Unicode</th><th>Editor shortcut</th><th>Definition</th></tr></thead><tbody>
+<div class="table-wrapper"><table><thead><tr><th>Ascii</th><th>Unicode</th><th>Editor shortcut</th><th>Definition</th></tr></thead><tbody>
 <tr><td>True</td><td></td><td></td><td>True</td></tr>
 <tr><td>False</td><td></td><td></td><td>False</td></tr>
 <tr><td>Not</td><td>¬</td><td><code>\not</code>, <code>\neg</code></td><td>Not</td></tr>
@@ -464,6 +473,7 @@ this example.</p>
 <tr><td>-&gt;</td><td>→</td><td><code>\to</code>, <code>\r</code>, <code>\imp</code></td><td></td></tr>
 <tr><td>&lt;-&gt;</td><td>↔</td><td><code>\iff</code>, <code>\lr</code></td><td>Iff</td></tr>
 </tbody></table>
+</div>
 <p>They all take values in <code>Prop</code>.</p>
 <pre><code class="language-lean">variable (p q : Prop)
 
@@ -476,18 +486,18 @@ strongly, then <code>∧</code>, then <code>∨</code>, then <code>→</code>, a
 example, <code>a ∧ b → c ∨ d ∧ e</code> means <code>(a ∧ b) → (c ∨ (d ∧ e))</code>. Remember that <code>→</code> associates to the right (nothing changes
 now that the arguments are elements of <code>Prop</code>, instead of some other
 <code>Type</code>), as do the other binary connectives. So if we have
-<code>p q r : Prop</code>, the expression <code>p → q → r</code> reads &quot;if <code>p</code>, then if <code>q</code>,
-then <code>r</code>.&quot; This is just the &quot;curried&quot; form of <code>p ∧ q → r</code>.</p>
+<code>p q r : Prop</code>, the expression <code>p → q → r</code> reads "if <code>p</code>, then if <code>q</code>,
+then <code>r</code>." This is just the "curried" form of <code>p ∧ q → r</code>.</p>
 <p>In the last chapter we observed that lambda abstraction can be viewed
-as an &quot;introduction rule&quot; for <code>→</code>. In the current setting, it shows
-how to &quot;introduce&quot; or establish an implication. Application can be
-viewed as an &quot;elimination rule,&quot; showing how to &quot;eliminate&quot; or use an
+as an "introduction rule" for <code>→</code>. In the current setting, it shows
+how to "introduce" or establish an implication. Application can be
+viewed as an "elimination rule," showing how to "eliminate" or use an
 implication in a proof. The other propositional connectives are
 defined in Lean's library in the file <code>Prelude.core</code> (see
 <a href="./interacting_with_lean.html#importing-files">importing files</a> for more information on the library
 hierarchy), and each connective comes with its canonical introduction
 and elimination rules.</p>
-<h3><a class="header" href="#conjunction" id="conjunction">Conjunction</a></h3>
+<h3 id="conjunction"><a class="header" href="#conjunction">Conjunction</a></h3>
 <p>The expression <code>And.intro h1 h2</code> builds a proof of <code>p ∧ q</code> using
 proofs <code>h1 : p</code> and <code>h2 : q</code>. It is common to describe
 <code>And.intro</code> as the <em>and-introduction</em> rule. In the next example we
@@ -564,7 +574,7 @@ information in this way can sometimes make a proof harder to read. But
 for straightforward constructions like the one above, when the type of
 <code>h</code> and the goal of the construction are salient, the notation is
 clean and effective.</p>
-<p>It is common to iterate constructions like &quot;And.&quot; Lean also allows you
+<p>It is common to iterate constructions like "And." Lean also allows you
 to flatten nested constructors that associate to the right, so that
 these two proofs are equivalent:</p>
 <pre><code class="language-lean">variable (p q : Prop)
@@ -576,7 +586,7 @@ example (h : p ∧ q) : q ∧ p ∧ q :=
   ⟨h.right, h.left, h.right⟩
 </code></pre>
 <p>This is often useful as well.</p>
-<h3><a class="header" href="#disjunction" id="disjunction">Disjunction</a></h3>
+<h3 id="disjunction"><a class="header" href="#disjunction">Disjunction</a></h3>
 <p>The expression <code>Or.intro_left q hp</code> creates a proof of <code>p ∨ q</code>
 from a proof <code>hp : p</code>. Similarly, <code>Or.intro_right p hq</code> creates a
 proof for <code>p ∨ q</code> using a proof <code>hq : q</code>. These are the left and
@@ -625,7 +635,7 @@ example (h : p ∨ q) : q ∨ p :=
 </code></pre>
 <p>Once again, you should exercise judgment as to whether such
 abbreviations enhance or diminish readability.</p>
-<h3><a class="header" href="#negation-and-falsity" id="negation-and-falsity">Negation and Falsity</a></h3>
+<h3 id="negation-and-falsity"><a class="header" href="#negation-and-falsity">Negation and Falsity</a></h3>
 <p>Negation, <code>¬p</code>, is actually defined to be <code>p → False</code>, so we
 obtain <code>¬p</code> by deriving a contradiction from <code>p</code>. Similarly, the
 expression <code>hnp hp</code> produces a proof of <code>False</code> from <code>hp : p</code>
@@ -663,7 +673,7 @@ example (hnp : ¬p) (hq : q) (hqp : q → p) : r :=
 <p>Incidentally, just as <code>False</code> has only an elimination rule, <code>True</code>
 has only an introduction rule, <code>True.intro : true</code>.  In other words,
 <code>True</code> is simply true, and has a canonical proof, <code>True.intro</code>.</p>
-<h3><a class="header" href="#logical-equivalence" id="logical-equivalence">Logical Equivalence</a></h3>
+<h3 id="logical-equivalence"><a class="header" href="#logical-equivalence">Logical Equivalence</a></h3>
 <p>The expression <code>Iff.intro h1 h2</code> produces a proof of <code>p ↔ q</code> from
 <code>h1 : p → q</code> and <code>h2 : q → p</code>.  The expression <code>Iff.mp h</code>
 produces a proof of <code>p → q</code> from <code>h : p ↔ q</code>. Similarly,
@@ -694,7 +704,7 @@ theorem and_swap : p ∧ q ↔ q ∧ p :=
 
 example (h : p ∧ q) : q ∧ p := (and_swap p q).mp h
 </code></pre>
-<h2><a class="header" href="#introducing-auxiliary-subgoals" id="introducing-auxiliary-subgoals">Introducing Auxiliary Subgoals</a></h2>
+<h2 id="introducing-auxiliary-subgoals"><a class="header" href="#introducing-auxiliary-subgoals">Introducing Auxiliary Subgoals</a></h2>
 <p>This is a good place to introduce another device Lean offers to help
 structure long proofs, namely, the <code>have</code> construct, which
 introduces an auxiliary subgoal in a proof. Here is a small example,
@@ -714,7 +724,7 @@ device is extremely useful when it comes to structuring long proofs,
 since we can use intermediate <code>have</code>'s as stepping stones leading to
 the final goal.</p>
 <p>Lean also supports a structured way of reasoning backwards from a
-goal, which models the &quot;suffices to show&quot; construction in ordinary
+goal, which models the "suffices to show" construction in ordinary
 mathematics. The next example simply permutes the last two lines in
 the previous proof.</p>
 <pre><code class="language-lean">variable (p q : Prop)
@@ -728,7 +738,7 @@ example (h : p ∧ q) : q ∧ p :=
 to show that it indeed suffices to show <code>q</code>, by proving the original
 goal of <code>q ∧ p</code> with the additional hypothesis <code>hq : q</code>. Finally,
 we have to show <code>q</code>.</p>
-<h2><a class="header" href="#classical-logic" id="classical-logic">Classical Logic</a></h2>
+<h2 id="classical-logic"><a class="header" href="#classical-logic">Classical Logic</a></h2>
 <p>The introduction and elimination rules we have seen so far are all
 constructive, which is to say, they reflect a computational
 understanding of the logical connectives based on the
@@ -740,7 +750,7 @@ principle, you have to open the classical namespace.</p>
 variable (p : Prop)
 #check em p
 </code></pre>
-<p>Intuitively, the constructive &quot;Or&quot; is very strong: asserting <code>p ∨ q</code>
+<p>Intuitively, the constructive "Or" is very strong: asserting <code>p ∨ q</code>
 amounts to knowing which is the case. If <code>RH</code> represents the Riemann
 hypothesis, a classical mathematician is willing to assert
 <code>RH ∨ ¬RH</code>, even though we cannot yet assert either disjunct.</p>
@@ -785,9 +795,9 @@ for you to get a sense of where classical reasoning is used.  It is
 needed in the following example because, from a constructive
 standpoint, knowing that <code>p</code> and <code>q</code> are not both true does not
 necessarily tell you which one is false:</p>
-<pre><code class="language-lean"><span class="boring">open Classical
-</span><span class="boring">variable (p q : Prop)
-</span>example (h : ¬(p ∧ q)) : ¬p ∨ ¬q :=
+<pre><code class="language-lean"># open Classical
+# variable (p q : Prop)
+example (h : ¬(p ∧ q)) : ¬p ∨ ¬q :=
   Or.elim (em p)
     (fun hp : p =&gt;
       Or.inr
@@ -803,7 +813,7 @@ are permissible, and Lean supports the use of classical reasoning in
 such contexts without relying on excluded middle.</p>
 <p>The full list of axioms that are used in Lean to support classical
 reasoning are discussed in <a href="./axioms_and_computation.html">Axioms and Computation</a>.</p>
-<h2><a class="header" href="#examples-of-propositional-validities" id="examples-of-propositional-validities">Examples of Propositional Validities</a></h2>
+<h2 id="examples-of-propositional-validities"><a class="header" href="#examples-of-propositional-validities">Examples of Propositional Validities</a></h2>
 <p>Lean's standard library contains proofs of many valid statements of
 propositional logic, all of which you are free to use in proofs of
 your own. The following list includes a number of common identities.</p>
@@ -860,8 +870,8 @@ until no more remain.</p>
 <p>Here is another useful trick. Instead of using <code>sorry</code>, you can use
 an underscore <code>_</code> as a placeholder. Recall this tells Lean that
 the argument is implicit, and should be filled in automatically. If
-Lean tries to do so and fails, it returns with an error message &quot;don't
-know how to synthesize placeholder,&quot; followed by the type of
+Lean tries to do so and fails, it returns with an error message "don't
+know how to synthesize placeholder," followed by the type of
 the term it is expecting, and all the objects and hypotheses available
 in the context. In other words, for each unresolved placeholder, Lean
 reports the subgoal that needs to be filled at that point. You can
@@ -900,8 +910,8 @@ example (p q : Prop) : ¬(p ∧ ¬q) → (p → q) :=
       (fun hq : q =&gt; hq)
       (fun hnq : ¬q =&gt; absurd (And.intro hp hnq) h)
 </code></pre>
-<h2><a class="header" href="#exercises" id="exercises">Exercises</a></h2>
-<p>Prove the following identities, replacing the &quot;sorry&quot; placeholders with actual proofs.</p>
+<h2 id="exercises"><a class="header" href="#exercises">Exercises</a></h2>
+<p>Prove the following identities, replacing the "sorry" placeholders with actual proofs.</p>
 <pre><code class="language-lean">variable (p q r : Prop)
 
 -- commutativity of ∧ and ∨
@@ -929,7 +939,7 @@ example : p ∨ False ↔ p := sorry
 example : p ∧ False ↔ False := sorry
 example : (p → q) → (¬q → ¬p) := sorry
 </code></pre>
-<p>Prove the following identities, replacing the &quot;sorry&quot; placeholders
+<p>Prove the following identities, replacing the "sorry" placeholders
 with actual proofs. These require classical reasoning.</p>
 <pre><code class="language-lean">open Classical
 
@@ -949,17 +959,13 @@ example : (((p → q) → p) → p) := sorry
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                        
                             <a rel="prev" href="dependent_type_theory.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
-                        
 
-                        
-                            <a rel="next" href="quantifiers_and_equality.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="quantifiers_and_equality.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
-                        
 
                         <div style="clear: both"></div>
                     </nav>
@@ -967,52 +973,36 @@ example : (((p → q) → p) → p) := sorry
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                
                     <a rel="prev" href="dependent_type_theory.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
-                
 
-                
-                    <a rel="next" href="quantifiers_and_equality.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="quantifiers_and_equality.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
-                
             </nav>
 
         </div>
 
-        
 
-        
 
-        
 
-        
-        <script type="text/javascript">
+        <script>
             window.playground_copyable = true;
-            window.clip_buttons = true;
-            window.tryit_buttons = false;
-            window.side_bar = true;
         </script>
-        
 
-        
 
-        
-        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
-        
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
 
-        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
-        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
 
         <!-- Custom JS scripts -->
-        
 
-        
 
+    </div>
     </body>
 </html>

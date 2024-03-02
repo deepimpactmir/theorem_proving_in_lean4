@@ -1,40 +1,27 @@
 <!DOCTYPE HTML>
-<html lang="en" class="sidebar-visible no-js light">
+<html lang="en" class="light" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
         <title>Tactics - Theorem Proving in Lean 4</title>
-        
-        
 
 
         <!-- Custom HTML head -->
         
-
-
-        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="theme-color" content="#ffffff" />
+        <meta name="theme-color" content="#ffffff">
 
-        
         <link rel="icon" href="favicon.svg">
-        
-        
         <link rel="shortcut icon" href="favicon.png">
-        
         <link rel="stylesheet" href="css/variables.css">
         <link rel="stylesheet" href="css/general.css">
         <link rel="stylesheet" href="css/chrome.css">
-        
         <link rel="stylesheet" href="css/print.css" media="print">
-        
 
         <!-- Fonts -->
         <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
-        
         <link rel="stylesheet" href="fonts/fonts.css">
-        
 
         <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="highlight.css">
@@ -42,111 +29,134 @@
         <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
-        
 
-        
     </head>
-    <body>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
         <!-- Provide site root to javascript -->
-        <script type="text/javascript">
+        <script>
             var path_to_root = "";
             var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
-        <script type="text/javascript">
+        <script>
             try {
                 var theme = localStorage.getItem('mdbook-theme');
                 var sidebar = localStorage.getItem('mdbook-sidebar');
 
-                if (theme && theme.startsWith('"') && theme.endsWith('"')) {
+                if (theme.startsWith('"') && theme.endsWith('"')) {
                     localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
                 }
 
-                if (sidebar && sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
                     localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
                 }
             } catch (e) { }
         </script>
 
         <!-- Set the theme before any content is loaded, prevents flash -->
-        <script type="text/javascript">
+        <script>
             var theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
             var html = document.querySelector('html');
-            html.classList.remove('no-js')
             html.classList.remove('light')
             html.classList.add(theme);
-            html.classList.add('js');
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
         </script>
 
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
         <!-- Hide / unhide sidebar before it is displayed -->
-        <script type="text/javascript">
-            var html = document.querySelector('html');
-            var sidebar = 'hidden';
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
             }
-            html.classList.remove('sidebar-visible');
-            html.classList.add("sidebar-" + sidebar);
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
                 <ol class="chapter"><li class="chapter-item expanded affix "><a href="title_page.html">Theorem Proving in Lean 4</a></li><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="dependent_type_theory.html"><strong aria-hidden="true">2.</strong> Dependent Type Theory</a></li><li class="chapter-item expanded "><a href="propositions_and_proofs.html"><strong aria-hidden="true">3.</strong> Propositions and Proofs</a></li><li class="chapter-item expanded "><a href="quantifiers_and_equality.html"><strong aria-hidden="true">4.</strong> Quantifiers and Equality</a></li><li class="chapter-item expanded "><a href="tactics.html" class="active"><strong aria-hidden="true">5.</strong> Tactics</a></li><li class="chapter-item expanded "><a href="interacting_with_lean.html"><strong aria-hidden="true">6.</strong> Interacting with Lean</a></li><li class="chapter-item expanded "><a href="inductive_types.html"><strong aria-hidden="true">7.</strong> Inductive Types</a></li><li class="chapter-item expanded "><a href="induction_and_recursion.html"><strong aria-hidden="true">8.</strong> Induction and Recursion</a></li><li class="chapter-item expanded "><a href="structures_and_records.html"><strong aria-hidden="true">9.</strong> Structures and Records</a></li><li class="chapter-item expanded "><a href="type_classes.html"><strong aria-hidden="true">10.</strong> Type Classes</a></li><li class="chapter-item expanded "><a href="conv.html"><strong aria-hidden="true">11.</strong> The Conversion Tactic Mode</a></li><li class="chapter-item expanded "><a href="axioms_and_computation.html"><strong aria-hidden="true">12.</strong> Axioms and Computation</a></li></ol>
             </div>
-            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
         </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
 
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
-                
-                <div id="menu-bar-hover-placeholder"></div>
-                <div id="menu-bar" class="menu-bar sticky bordered">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
                     <div class="left-buttons">
-                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
                             <i class="fa fa-bars"></i>
-                        </button>
+                        </label>
                         <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
                             <i class="fa fa-paint-brush"></i>
                         </button>
                         <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        
                         <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
-                        
                     </div>
 
                     <h1 class="menu-title">Theorem Proving in Lean 4</h1>
 
                     <div class="right-buttons">
-                        
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
-                        
-                        
                         <a href="https://github.com/leanprover/theorem_proving_in_lean4" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        
+
                     </div>
                 </div>
 
-                
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -154,10 +164,9 @@
                         </ul>
                     </div>
                 </div>
-                
 
                 <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
-                <script type="text/javascript">
+                <script>
                     document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
                     document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
                     Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
@@ -167,27 +176,27 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1><a class="header" href="#tactics" id="tactics">Tactics</a></h1>
+                        <h1 id="tactics"><a class="header" href="#tactics">Tactics</a></h1>
 <p>In this chapter, we describe an alternative approach to constructing
 proofs, using <em>tactics</em>.  A proof term is a representation of a
 mathematical proof; tactics are commands, or instructions, that
 describe how to build such a proof. Informally, you might begin a
-mathematical proof by saying &quot;to prove the forward direction, unfold
-the definition, apply the previous lemma, and simplify.&quot; Just as these
+mathematical proof by saying "to prove the forward direction, unfold
+the definition, apply the previous lemma, and simplify." Just as these
 are instructions that tell the reader how to find the relevant proof,
 tactics are instructions that tell Lean how to construct a proof
 term. They naturally support an incremental style of writing proofs,
 in which you decompose a proof and work on goals one step at a time.</p>
 <p>We will describe proofs that consist of sequences of tactics as
-&quot;tactic-style&quot; proofs, to contrast with the ways of writing proof
-terms we have seen so far, which we will call &quot;term-style&quot;
+"tactic-style" proofs, to contrast with the ways of writing proof
+terms we have seen so far, which we will call "term-style"
 proofs. Each style has its own advantages and disadvantages. For
 example, tactic-style proofs can be harder to read, because they
 require the reader to predict or guess the results of each
 instruction. But they can also be shorter and easier to
 write. Moreover, tactics offer a gateway to using Lean's automation,
 since automated procedures are themselves tactics.</p>
-<h2><a class="header" href="#entering-tactic-mode" id="entering-tactic-mode">Entering Tactic Mode</a></h2>
+<h2 id="entering-tactic-mode"><a class="header" href="#entering-tactic-mode">Entering Tactic Mode</a></h2>
 <p>Conceptually, stating a theorem or introducing a <code>have</code> statement
 creates a goal, namely, the goal of constructing a term with the
 expected type. For example, the following creates the goal of
@@ -199,7 +208,7 @@ constructing a term of type <code>p ∧ q ∧ p</code>, in a context with consta
 <p>You can write this goal as follows:</p>
 <pre><code>    p : Prop, q : Prop, hp : p, hq : q ⊢ p ∧ q ∧ p
 </code></pre>
-<p>Indeed, if you replace the &quot;sorry&quot; by an underscore in the example
+<p>Indeed, if you replace the "sorry" by an underscore in the example
 above, Lean will report that it is exactly this goal that has been
 left unsolved.</p>
 <p>Ordinarily, you meet such a goal by writing an explicit term. But
@@ -249,13 +258,13 @@ elaborator takes the expected type, given by the target of the goal,
 into account when processing the expression that is being applied. In
 this case, however, <code>apply</code> would work just as well.</p>
 <p>You can see the resulting proof term with the <code>#print</code> command:</p>
-<pre><code class="language-lean"><span class="boring">theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p := by
-</span><span class="boring"> apply And.intro
-</span><span class="boring"> exact hp
-</span><span class="boring"> apply And.intro
-</span><span class="boring"> exact hq
-</span><span class="boring"> exact hp
-</span>#print test
+<pre><code class="language-lean"># theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p := by
+#  apply And.intro
+#  exact hp
+#  apply And.intro
+#  exact hq
+#  exact hp
+#print test
 </code></pre>
 <p>You can write a tactic script incrementally. In VS Code, you can open
 a window to display messages by pressing <code>Ctrl-Shift-Enter</code>, and
@@ -274,10 +283,10 @@ proof:</p>
   exact And.intro hq hp
 </code></pre>
 <p>Unsurprisingly, it produces exactly the same proof term.</p>
-<pre><code class="language-lean"><span class="boring">theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p := by
-</span><span class="boring"> apply And.intro hp
-</span><span class="boring"> exact And.intro hq hp
-</span>#print test
+<pre><code class="language-lean"># theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p := by
+#  apply And.intro hp
+#  exact And.intro hq hp
+#print test
 </code></pre>
 <p>Multiple tactic applications can be written in a single line by concatenating with a semicolon.</p>
 <pre><code class="language-lean">theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p := by
@@ -309,12 +318,12 @@ notation:</p>
   case left =&gt; exact hp
 </code></pre>
 <p>Note that Lean hides the other goals inside the <code>case</code> block. We say
-it is &quot;focusing&quot; on the selected goal.  Moreover, Lean flags an error
+it is "focusing" on the selected goal.  Moreover, Lean flags an error
 if the selected goal is not fully solved at the end of the <code>case</code>
 block.</p>
 <p>For simple subgoals, it may not be worth selecting a subgoal using its
 tag, but you may still want to structure the proof. Lean also provides
-the &quot;bullet&quot; notation <code>. &lt;tactics&gt;</code> (or <code>· &lt;tactics&gt;</code>) for
+the "bullet" notation <code>. &lt;tactics&gt;</code> (or <code>· &lt;tactics&gt;</code>) for
 structuring proof.</p>
 <pre><code class="language-lean">theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p := by
   apply And.intro
@@ -323,7 +332,7 @@ structuring proof.</p>
     . exact hq
     . exact hp
 </code></pre>
-<h2><a class="header" href="#basic-tactics" id="basic-tactics">Basic Tactics</a></h2>
+<h2 id="basic-tactics"><a class="header" href="#basic-tactics">Basic Tactics</a></h2>
 <p>In addition to <code>apply</code> and <code>exact</code>, another useful tactic is
 <code>intro</code>, which introduces a hypothesis. What follows is an example
 of an identity from propositional logic that we proved in a previous
@@ -517,7 +526,7 @@ context:</p>
 </code></pre>
 <p>Here the <code>rewrite</code> tactic, abbreviated <code>rw</code>, uses <code>h</code> to replace
 <code>x</code> by <code>3</code> again. The <code>rewrite</code> tactic will be discussed below.</p>
-<h2><a class="header" href="#more-tactics" id="more-tactics">More Tactics</a></h2>
+<h2 id="more-tactics"><a class="header" href="#more-tactics">More Tactics</a></h2>
 <p>Some additional tactics are useful for constructing and destructing
 propositions and data. For example, when applied to a goal of the form
 <code>p ∨ q</code>, you use tactics such as <code>apply Or.inl</code> and <code>apply Or.inr</code>.  Conversely, the <code>cases</code> tactic can be used to decompose a
@@ -691,7 +700,7 @@ the <a href="./inductive_types.html#tactics-for-inductive-types">Tactics for Ind
     | Or.inl ⟨hp, hq⟩ =&gt; constructor; exact hp; apply Or.inl; exact hq
     | Or.inr ⟨hp, hr⟩ =&gt; constructor; exact hp; apply Or.inr; exact hr
 </code></pre>
-<p>You can &quot;combine&quot; <code>intro h</code> with <code>match h ...</code> and write the previous examples as follows</p>
+<p>You can "combine" <code>intro h</code> with <code>match h ...</code> and write the previous examples as follows</p>
 <pre><code class="language-lean">example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) := by
   apply Iff.intro
   . intro
@@ -701,7 +710,7 @@ the <a href="./inductive_types.html#tactics-for-inductive-types">Tactics for Ind
     | Or.inl ⟨hp, hq⟩ =&gt; constructor; assumption; apply Or.inl; assumption
     | Or.inr ⟨hp, hr⟩ =&gt; constructor; assumption; apply Or.inr; assumption
 </code></pre>
-<h2><a class="header" href="#structuring-tactic-proofs" id="structuring-tactic-proofs">Structuring Tactic Proofs</a></h2>
+<h2 id="structuring-tactic-proofs"><a class="header" href="#structuring-tactic-proofs">Structuring Tactic Proofs</a></h2>
 <p>Tactics often provide an efficient way of building a proof, but long
 sequences of instructions can obscure the structure of the
 argument. In this section, we describe some means that help provide
@@ -866,7 +875,7 @@ expect the proof to look like this:</p>
   { &lt;proof of third goal&gt;  }
   { &lt;proof of final goal&gt;  }
 </code></pre>
-<h2><a class="header" href="#tactic-combinators" id="tactic-combinators">Tactic Combinators</a></h2>
+<h2 id="tactic-combinators"><a class="header" href="#tactic-combinators">Tactic Combinators</a></h2>
 <p><em>Tactic combinators</em> are operations that form new tactics from old
 ones. A sequencing combinator is already implicit in the <code>by</code> block:</p>
 <pre><code class="language-lean">example (p q : Prop) (hp : p) : p ∨ q :=
@@ -905,7 +914,7 @@ example (p q r : Prop) (hr : r) : p ∨ q ∨ r :=
 if that fails, it tries to focus on the right disjunct; and if that
 doesn't work, it invokes the assumption tactic.</p>
 <p>You will have no doubt noticed by now that tactics can fail. Indeed,
-it is the &quot;failure&quot; state that causes the <em>first</em> combinator to
+it is the "failure" state that causes the <em>first</em> combinator to
 backtrack and try the next tactic. The <code>try</code> combinator builds a
 tactic that always succeeds, though possibly in a trivial way:
 <code>try t</code> executes <code>t</code> and reports success, even if <code>t</code> fails. It is
@@ -952,7 +961,7 @@ conjunctions:</p>
 goal, temporarily hiding the others from the scope. So, if <code>t</code>
 ordinarily only effects the current goal, <code>focus (all_goals t)</code> has
 the same effect as <code>t</code>.</p>
-<h2><a class="header" href="#rewriting" id="rewriting">Rewriting</a></h2>
+<h2 id="rewriting"><a class="header" href="#rewriting">Rewriting</a></h2>
 <p>The <code>rewrite</code> tactic (abbreviated <code>rw</code>) and the <code>simp</code> tactic
 were introduced briefly in <a href="./quantifiers_and_equality.html#calculational-proofs">Calculational Proofs</a>. In this
 section and the next, we discuss them in greater detail.</p>
@@ -1035,7 +1044,7 @@ example (n : Nat) (h : n = 0) (t : Tuple α n) : Tuple α 0 := by
   rw [h] at t
   exact t
 </code></pre>
-<h2><a class="header" href="#using-the-simplifier" id="using-the-simplifier">Using the Simplifier</a></h2>
+<h2 id="using-the-simplifier"><a class="header" href="#using-the-simplifier">Using the Simplifier</a></h2>
 <p>Whereas <code>rewrite</code> is designed as a surgical tool for manipulating a
 goal, the simplifier offers a more powerful form of automation. A
 number of identities in Lean's library have been tagged with the
@@ -1070,7 +1079,7 @@ example (xs ys : List α)
         (h : p ((x + 0) * (0 + y * 1 + z * 0))) : p (x * y) := by
   simp at h; assumption
 </code></pre>
-<p>Moreover, you can use a &quot;wildcard&quot; asterisk to simplify all the hypotheses and the goal:</p>
+<p>Moreover, you can use a "wildcard" asterisk to simplify all the hypotheses and the goal:</p>
 <pre><code class="language-lean">attribute [local simp] Nat.mul_comm Nat.mul_assoc Nat.mul_left_comm
 attribute [local simp] Nat.add_assoc Nat.add_comm Nat.add_left_comm
 
@@ -1101,9 +1110,9 @@ and the expressions are ordered in a canonical (though somewhat
 arbitrary) way. Two expressions that are equivalent up to
 associativity and commutativity are then rewritten to the same
 canonical form.</p>
-<pre><code class="language-lean"><span class="boring">attribute [local simp] Nat.mul_comm Nat.mul_assoc Nat.mul_left_comm
-</span><span class="boring">attribute [local simp] Nat.add_assoc Nat.add_comm Nat.add_left_comm
-</span>example (w x y z : Nat) (p : Nat → Prop)
+<pre><code class="language-lean"># attribute [local simp] Nat.mul_comm Nat.mul_assoc Nat.mul_left_comm
+# attribute [local simp] Nat.add_assoc Nat.add_comm Nat.add_left_comm
+example (w x y z : Nat) (p : Nat → Prop)
         : x * y + z * w * x = x * w * z + y * x := by
   simp
 
@@ -1165,19 +1174,19 @@ reversal:</p>
 </code></pre>
 <p>Then for any list <code>xs</code>, <code>reverse (mk_symm xs)</code> is equal to <code>mk_symm xs</code>,
 which can easily be proved by unfolding the definition:</p>
-<pre><code class="language-lean"><span class="boring">def mk_symm (xs : List α) :=
-</span><span class="boring"> xs ++ xs.reverse
-</span>theorem reverse_mk_symm (xs : List α)
+<pre><code class="language-lean"># def mk_symm (xs : List α) :=
+#  xs ++ xs.reverse
+theorem reverse_mk_symm (xs : List α)
         : (mk_symm xs).reverse = mk_symm xs := by
   simp [mk_symm]
 </code></pre>
 <p>We can now use this theorem to prove new results:</p>
-<pre><code class="language-lean"><span class="boring">def mk_symm (xs : List α) :=
-</span><span class="boring"> xs ++ xs.reverse
-</span><span class="boring">theorem reverse_mk_symm (xs : List α)
-</span><span class="boring">       : (mk_symm xs).reverse = mk_symm xs := by
-</span><span class="boring"> simp [mk_symm]
-</span>example (xs ys : List Nat)
+<pre><code class="language-lean"># def mk_symm (xs : List α) :=
+#  xs ++ xs.reverse
+# theorem reverse_mk_symm (xs : List α)
+#        : (mk_symm xs).reverse = mk_symm xs := by
+#  simp [mk_symm]
+example (xs ys : List Nat)
         : (xs ++ mk_symm ys).reverse = mk_symm ys ++ xs.reverse := by
   simp [reverse_mk_symm]
 
@@ -1190,9 +1199,9 @@ example (xs ys : List Nat) (p : List Nat → Prop)
 it would be nice if users did not have to invoke it explicitly. You can
 achieve that by marking it as a simplification rule when the theorem
 is defined:</p>
-<pre><code class="language-lean"><span class="boring">def mk_symm (xs : List α) :=
-</span><span class="boring"> xs ++ xs.reverse
-</span>@[simp] theorem reverse_mk_symm (xs : List α)
+<pre><code class="language-lean"># def mk_symm (xs : List α) :=
+#  xs ++ xs.reverse
+@[simp] theorem reverse_mk_symm (xs : List α)
         : (mk_symm xs).reverse = mk_symm xs := by
   simp [mk_symm]
 
@@ -1207,9 +1216,9 @@ example (xs ys : List Nat) (p : List Nat → Prop)
 </code></pre>
 <p>The notation <code>@[simp]</code> declares <code>reverse_mk_symm</code> to have the
 <code>[simp]</code> attribute, and can be spelled out more explicitly:</p>
-<pre><code class="language-lean"><span class="boring">def mk_symm (xs : List α) :=
-</span><span class="boring"> xs ++ xs.reverse
-</span>theorem reverse_mk_symm (xs : List α)
+<pre><code class="language-lean"># def mk_symm (xs : List α) :=
+#  xs ++ xs.reverse
+theorem reverse_mk_symm (xs : List α)
         : (mk_symm xs).reverse = mk_symm xs := by
   simp [mk_symm]
 
@@ -1225,9 +1234,9 @@ example (xs ys : List Nat) (p : List Nat → Prop)
   simp at h; assumption
 </code></pre>
 <p>The attribute can also be applied any time after the theorem is declared:</p>
-<pre><code class="language-lean"><span class="boring">def mk_symm (xs : List α) :=
-</span><span class="boring"> xs ++ xs.reverse
-</span>theorem reverse_mk_symm (xs : List α)
+<pre><code class="language-lean"># def mk_symm (xs : List α) :=
+#  xs ++ xs.reverse
+theorem reverse_mk_symm (xs : List α)
         : (mk_symm xs).reverse = mk_symm xs := by
   simp [mk_symm]
 
@@ -1247,9 +1256,9 @@ remove it; it persists in any file that imports the one where the
 attribute is assigned. As we will discuss further in
 <a href="./interacting_with_lean.html#attributes">Attributes</a>, one can limit the scope of an attribute to the
 current file or section using the <code>local</code> modifier:</p>
-<pre><code class="language-lean"><span class="boring">def mk_symm (xs : List α) :=
-</span><span class="boring"> xs ++ xs.reverse
-</span>theorem reverse_mk_symm (xs : List α)
+<pre><code class="language-lean"># def mk_symm (xs : List α) :=
+#  xs ++ xs.reverse
+theorem reverse_mk_symm (xs : List α)
         : (mk_symm xs).reverse = mk_symm xs := by
   simp [mk_symm]
 
@@ -1314,7 +1323,7 @@ that <code>simp_arith</code> is a shorthand for <code>simp (config := { arith :=
 <pre><code class="language-lean">example : 0 &lt; 1 + x ∧ x + y + 2 ≥ y + 1 := by
   simp_arith
 </code></pre>
-<h2><a class="header" href="#split-tactic" id="split-tactic">Split Tactic</a></h2>
+<h2 id="split-tactic"><a class="header" href="#split-tactic">Split Tactic</a></h2>
 <p>The <code>split</code> tactic is useful for breaking nested <code>if-then-else</code> and <code>match</code> expressions in cases.
 For a <code>match</code> expression with <code>n</code> cases, the <code>split</code> tactic generates at most <code>n</code> subgoals. Here is an example.</p>
 <pre><code class="language-lean">def f (x y z : Nat) : Nat :=
@@ -1334,13 +1343,13 @@ example (x y z : Nat) : x ≠ 5 → y ≠ 5 → z ≠ 5 → z = w → f x y w = 
   . rfl
 </code></pre>
 <p>We can compress the tactic proof above as follows.</p>
-<pre><code class="language-lean"><span class="boring">def f (x y z : Nat) : Nat :=
-</span><span class="boring"> match x, y, z with
-</span><span class="boring"> | 5, _, _ =&gt; y
-</span><span class="boring"> | _, 5, _ =&gt; y
-</span><span class="boring"> | _, _, 5 =&gt; y
-</span><span class="boring"> | _, _, _ =&gt; 1
-</span>example (x y z : Nat) : x ≠ 5 → y ≠ 5 → z ≠ 5 → z = w → f x y w = 1 := by
+<pre><code class="language-lean"># def f (x y z : Nat) : Nat :=
+#  match x, y, z with
+#  | 5, _, _ =&gt; y
+#  | _, 5, _ =&gt; y
+#  | _, _, 5 =&gt; y
+#  | _, _, _ =&gt; 1
+example (x y z : Nat) : x ≠ 5 → y ≠ 5 → z ≠ 5 → z = w → f x y w = 1 := by
   intros; simp [f]; split &lt;;&gt; first | contradiction | rfl
 </code></pre>
 <p>The tactic <code>split &lt;;&gt; first | contradiction | rfl</code> first applies the <code>split</code> tactic,
@@ -1355,13 +1364,13 @@ Like <code>simp</code>, we can apply <code>split</code> to a particular hypothes
 example (xs ys : List Nat) (h : g xs ys = 0) : False := by
   simp [g] at h; split at h &lt;;&gt; simp_arith at h
 </code></pre>
-<h2><a class="header" href="#extensible-tactics" id="extensible-tactics">Extensible Tactics</a></h2>
+<h2 id="extensible-tactics"><a class="header" href="#extensible-tactics">Extensible Tactics</a></h2>
 <p>In the following example, we define the notation <code>triv</code> using the command <code>syntax</code>.
 Then, we use the command <code>macro_rules</code> to specify what should
 be done when <code>triv</code> is used. You can provide different expansions, and the tactic
 interpreter will try all of them until one succeeds.</p>
 <pre><code class="language-lean">-- Define a new tactic notation
-syntax &quot;triv&quot; : tactic
+syntax "triv" : tactic
 
 macro_rules
   | `(tactic| triv) =&gt; `(tactic| assumption)
@@ -1390,7 +1399,7 @@ macro_rules | `(tactic| triv) =&gt; `(tactic| apply And.intro &lt;;&gt; triv)
 example (x : α) (h : p) : x = x ∧ p := by
   triv
 </code></pre>
-<h2><a class="header" href="#exercises" id="exercises">Exercises</a></h2>
+<h2 id="exercises"><a class="header" href="#exercises">Exercises</a></h2>
 <ol>
 <li>
 <p>Go back to the exercises in <a href="./propositions_and_proofs.html">Chapter Propositions and
@@ -1412,17 +1421,13 @@ and <code>simp</code> as appropriate.</p>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                        
                             <a rel="prev" href="quantifiers_and_equality.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
-                        
 
-                        
-                            <a rel="next" href="interacting_with_lean.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="interacting_with_lean.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
-                        
 
                         <div style="clear: both"></div>
                     </nav>
@@ -1430,52 +1435,36 @@ and <code>simp</code> as appropriate.</p>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                
                     <a rel="prev" href="quantifiers_and_equality.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
-                
 
-                
-                    <a rel="next" href="interacting_with_lean.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="interacting_with_lean.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
-                
             </nav>
 
         </div>
 
-        
 
-        
 
-        
 
-        
-        <script type="text/javascript">
+        <script>
             window.playground_copyable = true;
-            window.clip_buttons = true;
-            window.tryit_buttons = false;
-            window.side_bar = true;
         </script>
-        
 
-        
 
-        
-        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
-        
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
 
-        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
-        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
 
         <!-- Custom JS scripts -->
-        
 
-        
 
+    </div>
     </body>
 </html>
