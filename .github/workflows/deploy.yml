@@ -14,8 +14,8 @@ jobs:
     - name: Download mdbook for Lean
       shell: bash
       run: |
-        curl -O --location https://github.com/leanprover/mdBook/releases/download/v0.4.6/mdbook-linux.tar.gz
-        tar xvf mdbook-linux.tar.gz
+        curl -O --location https://github.com/rust-lang/mdBook/releases/download/v0.4.37/mdbook-v0.4.37-x86_64-unknown-linux-gnu.tar.gz
+        tar xvf mdbook-v0.4.37-x86_64-unknown-linux-gnu.tar.gz
         ./mdbook-linux/mdbook --help
         ldd ./mdbook-linux/mdbook
     - name: Run mdbook build
