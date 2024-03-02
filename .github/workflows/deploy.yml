@@ -21,7 +21,7 @@ jobs:
     - name: Run mdbook build
       shell: bash
       run: |
-        ./mdbook-linux/mdbook build
+        ./mdbook build
         rm -rf ./out/.git
         rm -rf ./out/.github
     - name: Deploy 🚀
